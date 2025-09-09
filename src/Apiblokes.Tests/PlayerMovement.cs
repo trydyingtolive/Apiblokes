@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using Apiblokes.Game.Data;
-using Apiblokes.Game.Managers;
+﻿using Apiblokes.Game.Managers;
 using Apiblokes.Game.Model;
 using Apiblokes.Tests.Data;
 using Microsoft.Data.Sqlite;

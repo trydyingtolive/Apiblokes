@@ -2,9 +2,12 @@ using Apiblokes.Game.Data;
 using Apiblokes.Game.Managers;
 
 var builder = WebApplication.CreateBuilder( args );
+
+builder.Services.AddScoped<IDataContext, DataContext>();
+
 var app = builder.Build();
 
-app.MapGet( "/", ( HttpContext context ) =>
+app.MapGet( "/", ( HttpContext context, IDataContext dataContext ) =>
 {
     var auth = context.Request.Headers.Authorization.FirstOrDefault();
 
@@ -16,7 +19,7 @@ app.MapGet( "/", ( HttpContext context ) =>
 
     try
     {
-        var manager = new PlayerManager( new DataContext(), auth.Replace( "Bearer ", "" ) );
+        var manager = new PlayerManager( dataContext, auth.Replace( "Bearer ", "" ) );
         return manager.GetStatus();
     }
     catch
@@ -26,13 +29,13 @@ app.MapGet( "/", ( HttpContext context ) =>
     }
 } );
 
-app.MapPost( "/", async () =>
+app.MapPost( "/", async (IDataContext dataContext) =>
 {
-    return await PlayerManager.CreateNewPlayerAsync( new DataContext() );
+    return await PlayerManager.CreateNewPlayerAsync( dataContext );
 } );
 
 
-app.MapPost( "/move/{direction}", async ( HttpContext context, string direction ) =>
+app.MapPost( "/move/{direction}", async ( HttpContext context, string direction, IDataContext dataContext ) =>
 {
     var auth = context.Request.Headers.Authorization.FirstOrDefault();
 
@@ -44,7 +47,7 @@ app.MapPost( "/move/{direction}", async ( HttpContext context, string direction 
 
     try
     {
-        var manager = new PlayerManager( new DataContext(), auth.Replace( "Bearer ", "" ) );
+        var manager = new PlayerManager( dataContext, auth.Replace( "Bearer ", "" ) );
         return ( await manager.MovePlayerAsync( direction ) )
         .GetStatus();
     }

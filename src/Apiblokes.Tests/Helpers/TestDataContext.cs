@@ -2,7 +2,7 @@
 using Apiblokes.Game.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apiblokes.Tests.Data;
+namespace Apiblokes.Tests.Helpers;
 
 internal class TestDataContext : DbContext, IDataContext
 {

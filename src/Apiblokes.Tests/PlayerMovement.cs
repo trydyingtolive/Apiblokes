@@ -1,60 +1,87 @@
-﻿using Apiblokes.Game.Model;
+﻿using System.Diagnostics.Metrics;
+using Apiblokes.Game.Data;
+using Apiblokes.Game.Managers;
+using Apiblokes.Game.Model;
+using Apiblokes.Tests.Data;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Tests
 {
     public class PlayerMovement
     {
+        private readonly Guid PLAYER_ID = new Guid( "99eeca9c-582d-4a8b-ae51-a0cb2545bb1d" );
+        private TestDataContext dataContext;
+        private SqliteConnection? connection;
 
-        [Test]
-        public void Player_MoveNorth()
+        [SetUp]
+        public void Init()
         {
-            var player = new Player()
+
+            connection = new SqliteConnection( "DataSource=:memory:" );
+            connection.Open();
+
+            var options = new DbContextOptionsBuilder<TestDataContext>()
+            .UseSqlite( connection )
+            .Options;
+
+            dataContext = new TestDataContext( options );
+            dataContext.Database.EnsureCreated();
+
+            dataContext.Players.Add( new Player
             {
+                Id = PLAYER_ID,
+                X = 1,
                 Y = 1
-            };
+            }
+            );
+            dataContext.SaveChanges();
+        }
 
-            player.Move( "north" );
-
-            Assert.That(player.Y, Is.EqualTo( 2 ) );
+        [TearDown]
+        public void Cleanup()
+        {
+            connection?.Dispose();
+            dataContext.Dispose();
         }
 
         [Test]
-        public void Player_MoveSouth()
+        public async Task Player_MoveNorth()
         {
-            var player = new Player()
-            {
-                Y = 1
-            };
+            var playerManger = new PlayerManager( dataContext, PLAYER_ID.ToString() );
+            await playerManger.MovePlayerAsync( "north" );
 
-            player.Move( "south" );
-
-            Assert.That( player.Y, Is.EqualTo( 0 ) );
+            Assert.That( dataContext.Players.First().Y, Is.EqualTo( 2 ) );
         }
 
         [Test]
-        public void Player_MoveEast()
+        public async Task Player_MoveSouth()
         {
-            var player = new Player()
-            {
-                X = 1
-            };
+            var playerManger = new PlayerManager( dataContext, PLAYER_ID.ToString() );
+            await playerManger.MovePlayerAsync( "south" );
 
-            player.Move( "east" );
 
-            Assert.That( player.X, Is.EqualTo( 2 ) );
+            Assert.That( dataContext.Players.First().Y, Is.EqualTo( 0 ) );
         }
 
         [Test]
-        public void Player_MoveWest()
+        public async Task Player_MoveEast()
         {
-            var player = new Player()
-            {
-                X = 1
-            };
+            var playerManger = new PlayerManager( dataContext, PLAYER_ID.ToString() );
+            await playerManger.MovePlayerAsync( "east" );
 
-            player.Move( "west" );
 
-            Assert.That( player.X, Is.EqualTo( 0 ) );
+            Assert.That( dataContext.Players.First().X, Is.EqualTo( 2 ) );
+        }
+
+        [Test]
+        public async Task Player_MoveWest()
+        {
+            var playerManger = new PlayerManager( dataContext, PLAYER_ID.ToString() );
+            await playerManger.MovePlayerAsync( "west" );
+
+
+            Assert.That( dataContext.Players.First().X, Is.EqualTo( 0 ) );
         }
     }
 }

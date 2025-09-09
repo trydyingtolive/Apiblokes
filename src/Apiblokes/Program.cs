@@ -1,6 +1,5 @@
 using Apiblokes.Game.Data;
 using Apiblokes.Game.Managers;
-using Apiblokes.Game.Model;
 
 var builder = WebApplication.CreateBuilder( args );
 var app = builder.Build();
@@ -17,7 +16,7 @@ app.MapGet( "/", ( HttpContext context ) =>
 
     try
     {
-        var manager = new PlayerManager( auth.Replace( "Bearer ", "" ) );
+        var manager = new PlayerManager( new DataContext(), auth.Replace( "Bearer ", "" ) );
         return manager.GetStatus();
     }
     catch
@@ -29,7 +28,7 @@ app.MapGet( "/", ( HttpContext context ) =>
 
 app.MapPost( "/", async () =>
 {
-   return await PlayerManager.CreateNewPlayerAsync();
+    return await PlayerManager.CreateNewPlayerAsync( new DataContext() );
 } );
 
 
@@ -45,7 +44,7 @@ app.MapPost( "/move/{direction}", async ( HttpContext context, string direction 
 
     try
     {
-        var manager = new PlayerManager( auth.Replace( "Bearer ", "" ) );
+        var manager = new PlayerManager( new DataContext(), auth.Replace( "Bearer ", "" ) );
         return ( await manager.MovePlayerAsync( direction ) )
         .GetStatus();
     }

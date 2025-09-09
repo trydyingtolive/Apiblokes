@@ -5,26 +5,25 @@ namespace Apiblokes.Game.Managers;
 
 public class PlayerManager
 {
-    private DataContext dataContext;
-    private Player player;
+    private readonly IDataContext dataContext;
+    private readonly Player player;
 
-    public static async Task< string> CreateNewPlayerAsync()
+    public static async Task< string> CreateNewPlayerAsync( IDataContext dataContext )
     {
         var player = new Player();
-        var dataContext = new DataContext();
         dataContext.Players.Add( player );
         await dataContext.SaveChangesAsync();
         return player.Id.ToString();
     }
 
-    public PlayerManager( string playerId )
+    public PlayerManager( IDataContext dataContext, string playerId )
     {
         if ( !Guid.TryParse( playerId, out var id ) )
         {
             throw new Exception( "Player id is not valid" );
         }
 
-        dataContext = new DataContext();
+        this.dataContext = dataContext;
 
         player = dataContext.Players.FirstOrDefault( p => p.Id == id )
             ?? throw new Exception( "Player could not be found." );
@@ -46,7 +45,7 @@ public class PlayerManager
                 player.X -= 1;
                 break;
             case 'e':
-                player.Y += 1;
+                player.X += 1;
                 break;
             default:
                 break;

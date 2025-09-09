@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apiblokes.Game.Model;
+﻿using Apiblokes.Game.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Game.Data;
 
-public class DataContext : DbContext
+public class DataContext : DbContext, IDataContext
 {
     public DbSet<Player> Players { get; set; }
 
@@ -22,5 +17,10 @@ public class DataContext : DbContext
 
     protected override void OnConfiguring( DbContextOptionsBuilder options )
     => options.UseSqlite( $"Data Source={DbPath}" );
+
+    public Task<int> SaveChangesAsync()
+    {
+        return base.SaveChangesAsync();
+    }
 }
 

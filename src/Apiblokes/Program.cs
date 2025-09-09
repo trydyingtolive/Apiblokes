@@ -1,5 +1,6 @@
 using Apiblokes.Game.Data;
 using Apiblokes.Game.Managers;
+using Apiblokes.Helpers;
 
 var builder = WebApplication.CreateBuilder( args );
 
@@ -10,16 +11,8 @@ var app = builder.Build();
 
 app.MapGet( "/", async ( HttpContext context, IGameManager gameManager ) =>
 {
-    var auth = context.Request.Headers.Authorization.FirstOrDefault();
-
-    if ( string.IsNullOrEmpty( auth ) )
-    {
-        context.Response.StatusCode = 400;
-        return "Please post to this URL to get a player Id. Then put the Id in the Authorization header";
-    }
-
     var playerManager = await gameManager
-        .GetPlayerManagerAsync( auth.Replace( "Bearer ", "" ) );
+        .GetPlayerManagerAsync( context.GetPlayerId() );
 
     return playerManager.GetStatus();
 } );
@@ -33,15 +26,7 @@ app.MapPost( "/", async ( IGameManager gameManager ) =>
 
 app.MapPost( "/move/{direction}", async ( HttpContext context, string direction, IGameManager gameManager ) =>
 {
-    var auth = context.Request.Headers.Authorization.FirstOrDefault();
-
-    if ( string.IsNullOrEmpty( auth ) )
-    {
-        context.Response.StatusCode = 400;
-        return "Please post to this URL to get a player Id. Then put the Id in the Authorization header";
-    }
-
-    var playerManager = await gameManager.GetPlayerManagerAsync( auth.Replace( "Bearer ", "" ) );
+    var playerManager = await gameManager.GetPlayerManagerAsync( context.GetPlayerId() );
     await playerManager.MovePlayerAsync( direction );
     return playerManager.GetStatus();
 } );

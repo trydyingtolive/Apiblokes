@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-
-namespace Apiblokes.Model;
-
+﻿namespace Apiblokes.Game.Model;
 public class Player
 {
     public Guid Id { get; set; } = Guid.NewGuid();
@@ -9,7 +6,7 @@ public class Player
     public int X { get; set; } = 5;
     public int Y { get; set; } = 5;
 
-    public void Move(string direction )
+    public void Move( string direction )
     {
         var simpleDir = direction.ToLower().FirstOrDefault();
 
@@ -32,3 +29,4 @@ public class Player
         }
     }
 }
+

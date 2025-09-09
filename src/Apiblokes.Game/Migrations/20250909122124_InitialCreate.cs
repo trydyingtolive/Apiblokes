@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Apiblokes.Migrations
+namespace Apiblokes.Game.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

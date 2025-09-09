@@ -1,8 +1,12 @@
-﻿using System.Reflection.Metadata;
-using Apiblokes.Model;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Apiblokes.Game.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Apiblokes.Data;
+namespace Apiblokes.Game.Data;
 
 public class DataContext : DbContext
 {
@@ -19,3 +23,4 @@ public class DataContext : DbContext
     protected override void OnConfiguring( DbContextOptionsBuilder options )
     => options.UseSqlite( $"Data Source={DbPath}" );
 }
+

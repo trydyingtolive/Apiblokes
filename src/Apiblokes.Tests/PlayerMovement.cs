@@ -1,4 +1,4 @@
-﻿using Apiblokes.Model;
+﻿using Apiblokes.Game.Model;
 
 namespace Apiblokes.Tests
 {

@@ -1,5 +1,5 @@
-using Apiblokes.Data;
-using Apiblokes.Model;
+using Apiblokes.Game.Data;
+using Apiblokes.Game.Model;
 
 var builder = WebApplication.CreateBuilder( args );
 var app = builder.Build();

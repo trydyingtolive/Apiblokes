@@ -1,4 +1,5 @@
 using Apiblokes.Game.Data;
+using Apiblokes.Game.Managers;
 using Apiblokes.Game.Model;
 
 var builder = WebApplication.CreateBuilder( args );
@@ -6,7 +7,6 @@ var app = builder.Build();
 
 app.MapGet( "/", ( HttpContext context ) =>
 {
-
     var auth = context.Request.Headers.Authorization.FirstOrDefault();
 
     if ( string.IsNullOrEmpty( auth ) )
@@ -15,34 +15,25 @@ app.MapGet( "/", ( HttpContext context ) =>
         return "Please post to this URL to get a player Id. Then put the Id in the Authorization header";
     }
 
-    if ( !Guid.TryParse( auth.Replace( "Bearer ", "" ), out var id ) )
+    try
     {
-        return $"{auth} is not a valid header";
+        var manager = new PlayerManager( auth.Replace( "Bearer ", "" ) );
+        return manager.GetStatus();
     }
-
-    var dataContext = new DataContext();
-    var player = dataContext.Players.FirstOrDefault( p => p.Id == id );
-
-    if ( player == null )
+    catch
     {
         context.Response.StatusCode = 404;
         return "Player not found";
     }
-
-    return $"You are in a vast field. You see wild Apiblokes scattering before you. Location: {player.X}:{player.Y}";
 } );
 
-app.MapPost( "/", () =>
+app.MapPost( "/", async () =>
 {
-    var player = new Player();
-    var context = new DataContext();
-    context.Players.Add( player );
-    context.SaveChanges();
-    return player.Id;
+   return await PlayerManager.CreateNewPlayerAsync();
 } );
 
 
-app.MapPost( "/move/{direction}", ( HttpContext context, string direction ) =>
+app.MapPost( "/move/{direction}", async ( HttpContext context, string direction ) =>
 {
     var auth = context.Request.Headers.Authorization.FirstOrDefault();
 
@@ -52,25 +43,17 @@ app.MapPost( "/move/{direction}", ( HttpContext context, string direction ) =>
         return "Please post to this URL to get a player Id. Then put the Id in the Authorization header";
     }
 
-    if ( !Guid.TryParse( auth.Replace( "Bearer ", "" ), out var id ) )
+    try
     {
-        return $"{auth} is not a valid header";
+        var manager = new PlayerManager( auth.Replace( "Bearer ", "" ) );
+        return ( await manager.MovePlayerAsync( direction ) )
+        .GetStatus();
     }
-
-    var dataContext = new DataContext();
-    var player = dataContext.Players.FirstOrDefault( p => p.Id == id );
-
-    if ( player == null )
+    catch
     {
         context.Response.StatusCode = 404;
         return "Player not found";
     }
-
-    player.Move(direction);
-
-    dataContext.SaveChanges();
-
-    return $"You are in a vast field. You see wild Apiblokes scattering before you. Location: {player.X}:{player.Y}";
 } );
 
 app.Run();

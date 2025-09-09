@@ -58,6 +58,9 @@ public class PlayerManager
                 break;
         }
 
+        player.X = Math.Clamp( player.X, 0, 10 );
+        player.Y = Math.Clamp( player.Y, 0, 10 );
+
         await dataContext.SaveChangesAsync();
     }
 

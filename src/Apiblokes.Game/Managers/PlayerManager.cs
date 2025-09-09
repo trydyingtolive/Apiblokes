@@ -1,36 +1,43 @@
 ﻿using Apiblokes.Game.Data;
 using Apiblokes.Game.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Game.Managers;
 
 public class PlayerManager
 {
     private readonly IDataContext dataContext;
-    private readonly Player player;
+    private Player? player;
 
-    public static async Task< string> CreateNewPlayerAsync( IDataContext dataContext )
+    public PlayerManager( IDataContext dataContext )
     {
-        var player = new Player();
+        this.dataContext = dataContext;
+    }
+
+    public async Task<string> CreateNewPlayerAsync()
+    {
+        player = new Player();
         dataContext.Players.Add( player );
         await dataContext.SaveChangesAsync();
         return player.Id.ToString();
     }
 
-    public PlayerManager( IDataContext dataContext, string playerId )
+    public async Task<PlayerManager> GetPlayerAsync( string playerId )
     {
-        if ( !Guid.TryParse( playerId, out var id ) )
+        if ( Guid.TryParse( playerId, out var id ) )
         {
-            throw new Exception( "Player id is not valid" );
+            player = await dataContext.Players.FirstOrDefaultAsync( p => p.Id == id );
         }
-
-        this.dataContext = dataContext;
-
-        player = dataContext.Players.FirstOrDefault( p => p.Id == id )
-            ?? throw new Exception( "Player could not be found." );
+        return this;
     }
 
-    public async Task<PlayerManager> MovePlayerAsync( string direction )
+    public async Task MovePlayerAsync( string direction )
     {
+        if ( player == null )
+        {
+            return;
+        }
+
         var simpleDir = direction.ToLower().FirstOrDefault();
 
         switch ( simpleDir )
@@ -52,12 +59,15 @@ public class PlayerManager
         }
 
         await dataContext.SaveChangesAsync();
-
-        return this;
     }
 
     public string GetStatus()
     {
+        if ( player == null )
+        {
+            return "You must first create a player.";
+        }
+
         return $"You are in a vast field. You see wild Apiblokes scattering before you. Location: {player.X}:{player.Y}";
     }
 }

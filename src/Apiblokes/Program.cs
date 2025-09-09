@@ -4,10 +4,11 @@ using Apiblokes.Game.Managers;
 var builder = WebApplication.CreateBuilder( args );
 
 builder.Services.AddScoped<IDataContext, DataContext>();
+builder.Services.AddScoped<IGameManager, GameManager>();
 
 var app = builder.Build();
 
-app.MapGet( "/", ( HttpContext context, IDataContext dataContext ) =>
+app.MapGet( "/", async ( HttpContext context, IGameManager gameManager ) =>
 {
     var auth = context.Request.Headers.Authorization.FirstOrDefault();
 
@@ -17,25 +18,20 @@ app.MapGet( "/", ( HttpContext context, IDataContext dataContext ) =>
         return "Please post to this URL to get a player Id. Then put the Id in the Authorization header";
     }
 
-    try
-    {
-        var manager = new PlayerManager( dataContext, auth.Replace( "Bearer ", "" ) );
-        return manager.GetStatus();
-    }
-    catch
-    {
-        context.Response.StatusCode = 404;
-        return "Player not found";
-    }
+    var playerManager = await gameManager
+        .GetPlayerManagerAsync( auth.Replace( "Bearer ", "" ) );
+
+    return playerManager.GetStatus();
 } );
 
-app.MapPost( "/", async (IDataContext dataContext) =>
+app.MapPost( "/", async ( IGameManager gameManager ) =>
 {
-    return await PlayerManager.CreateNewPlayerAsync( dataContext );
+    var playerManager = await gameManager.GetPlayerManagerAsync( "" );
+    return await playerManager.CreateNewPlayerAsync();
 } );
 
 
-app.MapPost( "/move/{direction}", async ( HttpContext context, string direction, IDataContext dataContext ) =>
+app.MapPost( "/move/{direction}", async ( HttpContext context, string direction, IGameManager gameManager ) =>
 {
     var auth = context.Request.Headers.Authorization.FirstOrDefault();
 
@@ -45,17 +41,9 @@ app.MapPost( "/move/{direction}", async ( HttpContext context, string direction,
         return "Please post to this URL to get a player Id. Then put the Id in the Authorization header";
     }
 
-    try
-    {
-        var manager = new PlayerManager( dataContext, auth.Replace( "Bearer ", "" ) );
-        return ( await manager.MovePlayerAsync( direction ) )
-        .GetStatus();
-    }
-    catch
-    {
-        context.Response.StatusCode = 404;
-        return "Player not found";
-    }
+    var playerManager = await gameManager.GetPlayerManagerAsync( auth.Replace( "Bearer ", "" ) );
+    await playerManager.MovePlayerAsync( direction );
+    return playerManager.GetStatus();
 } );
 
 app.Run();

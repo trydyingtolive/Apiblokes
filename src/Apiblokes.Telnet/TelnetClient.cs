@@ -149,7 +149,8 @@ public class TelnetClient
             {
                 if ( command.CommandAction != null )
                 {
-                    await _writer.WriteLineAsync( command.CommandAction( argumentText ) );
+                    var playerManager = await _gameManager.GetPlayerManagerAsync( _playerId );
+                    await _writer.WriteLineAsync( await command.CommandAction( argumentText, playerManager ) );
                 }
                 return;
             }
@@ -165,6 +166,8 @@ public class TelnetClient
     /// <returns></returns>
     private (string command, string argument) ParseMessage( string message )
     {
+        message = message.Trim();
+
         if ( string.IsNullOrEmpty( message ) )
         {
             return (string.Empty, string.Empty);

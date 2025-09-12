@@ -8,13 +8,19 @@ internal static class Commands
         {
             CommandStrings = ["help","h"],
             Description = "Gets available commands",
-            CommandAction = (text) => { return HelpCommand(); }
+            CommandAction = (text, playerManager) => { return Task.FromResult( HelpCommand()); }
         },
         new Command
         {
             CommandStrings = ["echo"],
             Description = "Echoes back the text you write",
-            CommandAction = (text) => { return "Echoing: " + text; }
+            CommandAction = (text,playerManager) => { return Task.FromResult("Echoing: " + text); }
+        },
+        new Command
+        {
+            CommandStrings = ["move", "m"],
+            Description = "Moves your player north, south, east, or west. Ex: move w",
+            CommandAction = async (text,playerManager) => { await playerManager.MovePlayerAsync(text); return playerManager.GetStatus(); }
         }
     };
 

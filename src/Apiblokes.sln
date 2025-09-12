@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiblokes.Tests", "Apibloke
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiblokes.Game", "Apiblokes.Game\Apiblokes.Game.csproj", "{D83CD718-E865-4139-B33B-87D89A4C0AA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apiblokes.Telnet", "Apiblokes.Telnet\Apiblokes.Telnet.csproj", "{12CA4A31-3562-4853-8EB9-422E8CADF937}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D83CD718-E865-4139-B33B-87D89A4C0AA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D83CD718-E865-4139-B33B-87D89A4C0AA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D83CD718-E865-4139-B33B-87D89A4C0AA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12CA4A31-3562-4853-8EB9-422E8CADF937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12CA4A31-3562-4853-8EB9-422E8CADF937}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12CA4A31-3562-4853-8EB9-422E8CADF937}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12CA4A31-3562-4853-8EB9-422E8CADF937}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

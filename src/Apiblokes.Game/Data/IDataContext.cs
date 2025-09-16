@@ -6,5 +6,6 @@ namespace Apiblokes.Game.Data;
 public interface IDataContext
 {
     DbSet<Player> Players { get; set; }
+    DbSet<Bloke> Blokes { get; set; }
     Task<int> SaveChangesAsync();
 }

@@ -33,5 +33,10 @@ namespace Apiblokes.Tests.Helpers
             var playerManager = new PlayerManager( DataContext );
             return await playerManager.GetPlayerAsync( playerId );
         }
+
+        public BlokeManager GetBlokeManager()
+        {
+            return new BlokeManager( DataContext );
+        }
     }
 }

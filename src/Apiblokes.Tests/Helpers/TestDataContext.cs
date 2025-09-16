@@ -7,6 +7,7 @@ namespace Apiblokes.Tests.Helpers;
 internal class TestDataContext : DbContext, IDataContext
 {
     public DbSet<Player> Players { get; set; }
+    public DbSet<Bloke> Blokes { get; set; }
 
     public TestDataContext( DbContextOptions<TestDataContext> options ) : base( options )
     {

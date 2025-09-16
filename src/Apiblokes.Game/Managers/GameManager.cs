@@ -11,6 +11,11 @@ public class GameManager : IGameManager
         this.context = context;
     }
 
+    public BlokeManager GetBlokeManager()
+    {
+        return new BlokeManager( context );
+    }
+
     public async Task<PlayerManager> GetPlayerManagerAsync( string playerId )
     {
         return await new PlayerManager( context ).GetPlayerAsync( playerId );

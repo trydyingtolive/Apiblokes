@@ -6,8 +6,10 @@ namespace Apiblokes.Game.Data;
 public class DataContext : DbContext, IDataContext
 {
     public DbSet<Player> Players { get; set; }
+    public DbSet<Bloke> Blokes { get; set; }
 
     public string DbPath { get; }
+
     public DataContext()
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;

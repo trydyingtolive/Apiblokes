@@ -23,14 +23,4 @@ public class BlokeManager
         dataContext.Blokes.Remove( bloke );
         await dataContext.SaveChangesAsync();
     }
-
-   
-
-
-
-
-
-
-
-
 }

@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using Apiblokes.Game.Managers;
+using Apiblokes.Game.Managers.Game;
 using Microsoft.Extensions.Hosting;
 
 namespace Apiblokes.Telnet;

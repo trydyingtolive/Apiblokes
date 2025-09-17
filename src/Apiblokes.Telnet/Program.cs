@@ -1,6 +1,7 @@
 ﻿using System;
 using Apiblokes.Game.Data;
-using Apiblokes.Game.Managers;
+using Apiblokes.Game.Managers.Blokes;
+using Apiblokes.Game.Managers.Game;
 using Apiblokes.Telnet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +13,8 @@ db.Database.EnsureCreated();
 
 builder.Services.AddScoped<IDataContext, DataContext>();
 builder.Services.AddScoped<IGameManager, GameManager>();
+builder.Services.AddScoped<IBlokeManagerBuilder, BlokeManagerBuilder>();
+
 builder.Services.AddHostedService<TelnetServer>();
 
 using IHost host = builder.Build();

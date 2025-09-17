@@ -1,4 +1,4 @@
-﻿using Apiblokes.Game.Managers;
+﻿using Apiblokes.Game.Managers.Players;
 
 namespace Apiblokes.Telnet.Commanding;
 

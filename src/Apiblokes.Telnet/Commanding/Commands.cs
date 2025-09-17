@@ -14,13 +14,13 @@ internal static class Commands
         {
             CommandStrings = ["look", "l"],
             Description = "Look at the world you are in.",
-            CommandAction = async (text,playerManager) => {  return playerManager.GetStatus();  }
+            CommandAction = async (text,playerManager) => {  return await playerManager.GetStatusAsync();  }
         },
         new Command
         {
             CommandStrings = ["move", "m"],
             Description = "Moves your player north, south, east, or west. Ex: move w",
-            CommandAction = async (text,playerManager) => { await playerManager.MovePlayerAsync(text); return playerManager.GetStatus(); }
+            CommandAction = async (text,playerManager) => { await playerManager.MovePlayerAsync(text); return await playerManager.GetStatusAsync(); }
         }
     };
 

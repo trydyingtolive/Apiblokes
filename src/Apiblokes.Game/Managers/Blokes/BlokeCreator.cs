@@ -1,71 +1,32 @@
-﻿using Apiblokes.Game.Data;
-using Apiblokes.Game.Helpers;
+﻿using Apiblokes.Game.Helpers;
 using Apiblokes.Game.Model;
-using Microsoft.EntityFrameworkCore;
 
-namespace Apiblokes.Game.Managers;
+namespace Apiblokes.Game.Managers.Blokes;
 
-public class BlokeManager
+public static class BlokeCreator
 {
-    private readonly IDataContext dataContext;
-    private Bloke? bloke;
-    public BlokeManager( IDataContext dataContext )
+    public static Bloke CreateStarterBloke( Guid playerId )
     {
-        this.dataContext = dataContext;
+        var bloke = CreateBlokeFromType( BlokeType.Manager );
+        
+        bloke.PlayerId = playerId;
+        
+        return bloke;
     }
 
-    public async Task RefreshBlokes()
-    {
-        await RemoveOldBlokesAsync();
-        await PopulateBlokesAsync();
-    }
-
-    public async Task<Bloke> CreateBlokeAsync( int locationX, int locationY )
+    public static Bloke CreateBloke( int locationX, int locationY )
     {
         var blokeType = GetBlokeTypeFromLocation( locationX, locationY );
-        
-        bloke = CreateBloke( blokeType );
+
+        var bloke = CreateBlokeFromType( blokeType );
 
         bloke.X = locationX;
         bloke.Y = locationY;
 
-        dataContext.Blokes.Add( bloke );
-
-        await dataContext.SaveChangesAsync();
-
         return bloke;
     }
 
-    public async Task CreateStarterBlokeAsync( Guid playerId )
-    {
-        bloke = CreateBloke( BlokeType.Manager );
-        bloke.PlayerId = playerId;
-        dataContext.Blokes.Add( bloke );
-        await dataContext.SaveChangesAsync();
-    }
-
-    private async Task PopulateBlokesAsync()
-    {
-        var numberOfBlokes = await dataContext.Blokes.Where( b => b.PlayerId == null ).CountAsync();
-        Random r = new Random();
-
-        while ( numberOfBlokes < Constants.MaxNumberOfWorldBlokes )
-        {
-            var bloke = await CreateBlokeAsync( r.Next( Constants.XMinimum, Constants.XMaximum + 1 ), r.Next( Constants.YMinimum, Constants.YMaximum + 1 ) );
-            numberOfBlokes++;
-        }
-
-    }
-
-    private async Task RemoveOldBlokesAsync()
-    {
-        var hourAgo = DateTime.UtcNow.AddHours( -1 );
-        var blokes = await dataContext.Blokes.Where( b => b.PlayerId == null && b.CreatedDateTime < hourAgo ).ToListAsync();
-        dataContext.Blokes.RemoveRange( blokes );
-        await dataContext.SaveChangesAsync();
-    }
-
-    private Bloke CreateBloke( BlokeType blokeType )
+    private static Bloke CreateBlokeFromType( BlokeType blokeType )
     {
         var bloke = new Bloke
         {
@@ -110,16 +71,6 @@ public class BlokeManager
         return bloke;
     }
 
-    public static string GenerateBlokeName()
-    {
-        Random r = new Random();
-
-        var firstName = NamesList.FirstNames[r.Next( 0, NamesList.FirstNames.Length )].Capitalize();
-        var lastName = NamesList.LastNames[r.Next( 0, NamesList.LastNames.Length )].Capitalize();
-
-        return firstName + " " + lastName;
-    }
-
     private static BlokeType GetBlokeTypeFromLocation( int locationX, int locationY )
     {
         var type = BlokeType.Manager;
@@ -159,5 +110,13 @@ public class BlokeManager
         return type;
     }
 
-    
+    private static string GenerateBlokeName()
+    {
+        Random r = new Random();
+
+        var firstName = NamesList.FirstNames[r.Next( 0, NamesList.FirstNames.Length )].Capitalize();
+        var lastName = NamesList.LastNames[r.Next( 0, NamesList.LastNames.Length )].Capitalize();
+
+        return firstName + " " + lastName;
+    }
 }

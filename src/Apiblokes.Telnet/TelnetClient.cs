@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
-using Apiblokes.Game.Managers;
+using Apiblokes.Game.Managers.Game;
 using Apiblokes.Telnet.Commanding;
 
 namespace Apiblokes.Telnet;
@@ -18,7 +18,7 @@ public class TelnetClient
 
     public bool IsConnected => _tcpClient?.Connected ?? false;
 
-    public TelnetClient( TcpClient tcpClient, TelnetServer server, Game.Managers.IGameManager gameManager )
+    public TelnetClient( TcpClient tcpClient, TelnetServer server, IGameManager gameManager )
     {
         _tcpClient = tcpClient;
         _server = server;

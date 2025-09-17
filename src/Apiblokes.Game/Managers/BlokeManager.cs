@@ -25,9 +25,9 @@ public class BlokeManager
         var numberOfBlokes = await dataContext.Blokes.Where( b => b.PlayerId == null).CountAsync();
         Random r = new Random();
 
-        while ( numberOfBlokes < 25 )
+        while ( numberOfBlokes < Constants.MaxNumberOfWorldBlokes )
         {
-            var bloke = GenerateNewBloke( r.Next( 1, 11 ), r.Next( 1, 11 ) );
+            var bloke = GenerateNewBloke( r.Next( Constants.XMinimum, Constants.XMaximum + 1 ), r.Next( Constants.YMinimum, Constants.YMaximum + 1 ) );
             dataContext.Blokes.Add( bloke );
             numberOfBlokes++;
         }

@@ -1,4 +1,5 @@
 ﻿using Apiblokes.Game.Data;
+using Apiblokes.Game.Helpers;
 using Apiblokes.Game.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -58,8 +59,8 @@ public class PlayerManager
                 break;
         }
 
-        player.X = Math.Clamp( player.X, 0, 10 );
-        player.Y = Math.Clamp( player.Y, 0, 10 );
+        player.X = Math.Clamp( player.X, Constants.XMinimum, Constants.XMaximum );
+        player.Y = Math.Clamp( player.Y, Constants.YMinimum, Constants.YMaximum );
 
         await dataContext.SaveChangesAsync();
     }

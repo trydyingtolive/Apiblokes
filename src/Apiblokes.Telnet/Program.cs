@@ -1,10 +1,14 @@
-﻿using Apiblokes.Game.Data;
+﻿using System;
+using Apiblokes.Game.Data;
 using Apiblokes.Game.Managers;
 using Apiblokes.Telnet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder( args );
+
+var db = new DataContext();
+db.Database.EnsureCreated();
 
 builder.Services.AddScoped<IDataContext, DataContext>();
 builder.Services.AddScoped<IGameManager, GameManager>();

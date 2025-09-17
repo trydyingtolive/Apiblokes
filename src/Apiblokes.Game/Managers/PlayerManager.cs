@@ -17,6 +17,7 @@ public class PlayerManager
 
     public async Task<string> CreateNewPlayerAsync()
     {
+
         player = new Player();
         dataContext.Players.Add( player );
         await dataContext.SaveChangesAsync();
@@ -25,6 +26,7 @@ public class PlayerManager
         await blokeManager.CreateStarterBlokeAsync( player.Id );
 
         return player.Id.ToString();
+
     }
 
     public async Task<PlayerManager> GetPlayerAsync( string playerId )

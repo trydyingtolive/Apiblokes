@@ -12,9 +12,9 @@ internal static class Commands
         },
         new Command
         {
-            CommandStrings = ["echo"],
-            Description = "Echoes back the text you write",
-            CommandAction = (text,playerManager) => { return Task.FromResult("Echoing: " + text); }
+            CommandStrings = ["look", "l"],
+            Description = "Look at the world you are in.",
+            CommandAction = async (text,playerManager) => {  return playerManager.GetStatus();  }
         },
         new Command
         {

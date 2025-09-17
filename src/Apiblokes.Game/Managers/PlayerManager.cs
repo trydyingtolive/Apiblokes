@@ -20,6 +20,10 @@ public class PlayerManager
         player = new Player();
         dataContext.Players.Add( player );
         await dataContext.SaveChangesAsync();
+
+        var blokeManager = new BlokeManager( dataContext );
+        await blokeManager.CreateStarterBlokeAsync( player.Id );
+
         return player.Id.ToString();
     }
 

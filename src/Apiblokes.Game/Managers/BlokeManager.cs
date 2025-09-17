@@ -20,19 +20,41 @@ public class BlokeManager
         await PopulateBlokesAsync();
     }
 
+    public async Task<Bloke> CreateBlokeAsync( int locationX, int locationY )
+    {
+        var blokeType = GetBlokeTypeFromLocation( locationX, locationY );
+        
+        bloke = CreateBloke( blokeType );
+
+        bloke.X = locationX;
+        bloke.Y = locationY;
+
+        dataContext.Blokes.Add( bloke );
+
+        await dataContext.SaveChangesAsync();
+
+        return bloke;
+    }
+
+    public async Task CreateStarterBlokeAsync( Guid playerId )
+    {
+        bloke = CreateBloke( BlokeType.Manager );
+        bloke.PlayerId = playerId;
+        dataContext.Blokes.Add( bloke );
+        await dataContext.SaveChangesAsync();
+    }
+
     private async Task PopulateBlokesAsync()
     {
-        var numberOfBlokes = await dataContext.Blokes.Where( b => b.PlayerId == null).CountAsync();
+        var numberOfBlokes = await dataContext.Blokes.Where( b => b.PlayerId == null ).CountAsync();
         Random r = new Random();
 
         while ( numberOfBlokes < Constants.MaxNumberOfWorldBlokes )
         {
-            var bloke = GenerateNewBloke( r.Next( Constants.XMinimum, Constants.XMaximum + 1 ), r.Next( Constants.YMinimum, Constants.YMaximum + 1 ) );
-            dataContext.Blokes.Add( bloke );
+            var bloke = await CreateBlokeAsync( r.Next( Constants.XMinimum, Constants.XMaximum + 1 ), r.Next( Constants.YMinimum, Constants.YMaximum + 1 ) );
             numberOfBlokes++;
         }
 
-        await dataContext.SaveChangesAsync();
     }
 
     private async Task RemoveOldBlokesAsync()
@@ -43,33 +65,12 @@ public class BlokeManager
         await dataContext.SaveChangesAsync();
     }
 
-    public async Task CreateNewBlokeAsync( int locationX, int locationY )
-    {
-        bloke = GenerateNewBloke( locationX, locationY );
-        dataContext.Blokes.Add( bloke );
-
-        await dataContext.SaveChangesAsync();
-    }
-
-
-    public static string GenerateBlokeName()
-    {
-        Random r = new Random();
-
-        var firstName = NamesList.FirstNames[r.Next( 0, NamesList.FirstNames.Length )].Capitalize();
-        var lastName = NamesList.LastNames[r.Next( 0, NamesList.LastNames.Length )].Capitalize();
-
-        return firstName + " " + lastName;
-    }
-
-    public static Bloke GenerateNewBloke( int locationX, int locationY )
+    private Bloke CreateBloke( BlokeType blokeType )
     {
         var bloke = new Bloke
         {
             Name = GenerateBlokeName(),
-            Type = GetBlokeType( locationX, locationY ),
-            X = locationX,
-            Y = locationY
+            Type = blokeType,
         };
 
         switch ( bloke.Type )
@@ -109,7 +110,17 @@ public class BlokeManager
         return bloke;
     }
 
-    private static BlokeType GetBlokeType( int locationX, int locationY )
+    public static string GenerateBlokeName()
+    {
+        Random r = new Random();
+
+        var firstName = NamesList.FirstNames[r.Next( 0, NamesList.FirstNames.Length )].Capitalize();
+        var lastName = NamesList.LastNames[r.Next( 0, NamesList.LastNames.Length )].Capitalize();
+
+        return firstName + " " + lastName;
+    }
+
+    private static BlokeType GetBlokeTypeFromLocation( int locationX, int locationY )
     {
         var type = BlokeType.Manager;
 
@@ -147,4 +158,6 @@ public class BlokeManager
         }
         return type;
     }
+
+    
 }

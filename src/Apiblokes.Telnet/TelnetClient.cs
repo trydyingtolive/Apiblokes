@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
-using Apiblokes.Game.Managers.Game;
+using Apiblokes.Game.Helpers;
+using Apiblokes.Game.Managers.Players;
 using Apiblokes.Telnet.Commanding;
 
 namespace Apiblokes.Telnet;
@@ -12,20 +13,20 @@ public class TelnetClient
     private readonly StreamWriter _writer;
     private readonly TelnetServer _server;
     private string? _playerName;
-    private string? _playerId;
+    private string? _playerPassKey;
 
-    private IGameManager _gameManager;
+    private readonly IPlayerManagerBuilder _playerManagerBuilder;
 
     public bool IsConnected => _tcpClient?.Connected ?? false;
 
-    public TelnetClient( TcpClient tcpClient, TelnetServer server, IGameManager gameManager )
+    public TelnetClient( TcpClient tcpClient, TelnetServer server, IPlayerManagerBuilder playerManagerBuilder )
     {
         _tcpClient = tcpClient;
         _server = server;
         _stream = tcpClient.GetStream();
         _reader = new StreamReader( _stream, Encoding.ASCII );
         _writer = new StreamWriter( _stream, Encoding.ASCII ) { AutoFlush = true };
-        _gameManager = gameManager;
+        _playerManagerBuilder = playerManagerBuilder;
     }
 
     public async Task HandleAsync()
@@ -36,9 +37,6 @@ public class TelnetClient
             await _writer.WriteLineAsync( "Welcome to Apiblokes!!" );
 
             await GetOrCreateUser();
-
-            await _writer.WriteLineAsync( $"Hello {_playerName}! You are now connected." );
-            await _writer.WriteLineAsync( "Type 'help' for available commands or 'quit' to exit." );
 
             // Notify other clients
             _server.BroadcastMessage( $"*** {_playerName} joined the server ***", this );
@@ -102,7 +100,7 @@ public class TelnetClient
     private async Task GetOrCreateUser()
     {
         await _writer.WriteLineAsync( "If you know your login token enter it here." );
-        await _writer.WriteLineAsync( "Otherwise type new." );
+        await _writer.WriteLineAsync( "Otherwise type 'new'." );
         await _writer.WriteAsync( "> " );
 
         var output = await ReadInput();
@@ -113,17 +111,55 @@ public class TelnetClient
             return;
         }
 
-        var playerManager = await _gameManager.GetPlayerManagerAsync( output );
-        _playerId = output;
-        _playerName = output;
+        var playerManager = await _playerManagerBuilder.FromKeyAsync( output );
+
+        if ( playerManager == null )
+        {
+            await _writer.WriteLineAsync( "Player could not be found." );
+            await _writer.WriteLineAsync( "" );
+            await GetOrCreateUser();
+            return;
+        }
+
+        _playerName = playerManager.Name;
+        _playerPassKey = playerManager.PassKey;
+
+        await _writer.WriteLineAsync( $"Welcome back {_playerName}" );
+        await _writer.WriteLineAsync( "" );
+        await _writer.WriteLineAsync( await playerManager.GetStatusAsync() );
     }
 
     private async Task CreateUser()
     {
-        var playerManager = await _gameManager.GetPlayerManagerAsync( "" );
-        var token = await playerManager.CreateNewPlayerAsync();
-        _playerId = token;
-        _playerName = token;
+        await _writer.WriteLineAsync( "" );
+        await _writer.WriteLineAsync( "Please enter your player name:" );
+
+        var playerName = ( await ReadInput() ).Trim().Truncate( 10 );
+
+        await _writer.WriteLineAsync( "" );
+        await _writer.WriteLineAsync( $"Confirm you want you player to be named: {playerName} (y/N)" );
+
+        var response = ( await ReadInput() );
+
+        if ( !response.Trim().ToLower().StartsWith( "y" ) )
+        {
+            await CreateUser();
+            return;
+        }
+
+        var playerManager = await _playerManagerBuilder.FromNewPlayer( playerName );
+        _playerPassKey = playerManager.PassKey;
+        _playerName = playerName;
+
+        await _writer.WriteLineAsync( "" );
+        await _writer.WriteLineAsync( $"Welcome {_playerName}" );
+        await _writer.WriteLineAsync( $"Your Pass Key is {_playerPassKey}" );
+
+        await _writer.WriteLineAsync( "Please save it some place safe, you will not be able to access your player without it." );
+
+        await _writer.WriteLineAsync( "" );
+
+        await _writer.WriteLineAsync( await playerManager.GetStatusAsync() );
     }
 
     private async Task ProcessCommand( string message )
@@ -149,7 +185,13 @@ public class TelnetClient
             {
                 if ( command.CommandAction != null )
                 {
-                    var playerManager = await _gameManager.GetPlayerManagerAsync( _playerId );
+                    var playerManager = await _playerManagerBuilder.FromKeyAsync( _playerPassKey ?? "" );
+
+                    if ( playerManager == null )
+                    {
+                        return;
+                    }
+
                     await _writer.WriteLineAsync( await command.CommandAction( argumentText, playerManager ) );
                 }
                 return;

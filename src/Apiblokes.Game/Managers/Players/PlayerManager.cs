@@ -2,42 +2,23 @@
 using Apiblokes.Game.Helpers;
 using Apiblokes.Game.Managers.Blokes;
 using Apiblokes.Game.Model;
-using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Game.Managers.Players;
 
 public class PlayerManager
 {
+    private readonly Player player;
     private readonly IDataContext dataContext;
     private readonly IBlokeManagerBuilder blokeManagerBuilder;
-    private Player? player;
 
-    public PlayerManager( IDataContext dataContext, IBlokeManagerBuilder blokeManagerBuilder )
+    public string PassKey { get => player.PassKey; }
+    public string? Name { get => player.Name; }
+
+    public PlayerManager( Player player, IDataContext dataContext, IBlokeManagerBuilder blokeManagerBuilder )
     {
+        this.player = player;
         this.dataContext = dataContext;
         this.blokeManagerBuilder = blokeManagerBuilder;
-    }
-
-    public async Task<string> CreateNewPlayerAsync()
-    {
-
-        player = new Player();
-        dataContext.Players.Add( player );
-        await dataContext.SaveChangesAsync();
-  
-        await blokeManagerBuilder.FromStarterAsync( player.Id );
-
-        return player.Id.ToString();
-
-    }
-
-    public async Task<PlayerManager> GetPlayerAsync( string playerId )
-    {
-        if ( Guid.TryParse( playerId, out var id ) )
-        {
-            player = await dataContext.Players.FirstOrDefaultAsync( p => p.Id == id );
-        }
-        return this;
     }
 
     public async Task MovePlayerAsync( string direction )
@@ -80,7 +61,7 @@ public class PlayerManager
             return "You must first create a player.";
         }
 
-        var blokes = await  blokeManagerBuilder.AllFromPlayerInventory( player.Id );
+        var blokes = await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
 
         return $"\r\nYou are in a vast field. You see wild Apiblokes scattering before you. \r\nLocation: {player.X}:{player.Y} You have {blokes.Count} blokes.";
     }

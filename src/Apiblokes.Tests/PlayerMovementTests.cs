@@ -1,124 +1,132 @@
-﻿using Apiblokes.Game.Model;
+﻿using Apiblokes.Game.Managers.Blokes;
+using Apiblokes.Game.Managers.Players;
+using Apiblokes.Game.Model;
 using Apiblokes.Tests.Helpers;
 
 namespace Apiblokes.Tests
 {
     public class PlayerMovementTests
     {
-        private readonly Guid PLAYER_ID = new Guid( "99eeca9c-582d-4a8b-ae51-a0cb2545bb1d" );
-        private TestGameManager gameManager;
+        private string PassKey;
+        private TestDataContextFactory dataContextFactory;
+        private PlayerManagerBuilder playerManagerBuilder;
+        private BlokeManagerBuilder blokeManagerBuilder;
 
 
         [SetUp]
         public void Init()
         {
-            gameManager = new TestGameManager();
+            dataContextFactory = new TestDataContextFactory();
+            blokeManagerBuilder = new BlokeManagerBuilder( dataContextFactory );
+            playerManagerBuilder = new PlayerManagerBuilder( dataContextFactory, blokeManagerBuilder );
 
-            gameManager.DataContext.Players.Add( new Player
+            var player = new Player
             {
-                Id = PLAYER_ID,
                 X = 1,
-                Y = 1
-            }
-            );
-            gameManager.DataContext.SaveChanges();
+                Y = 1,
+            };
+
+            PassKey = player.PassKey;
+
+            dataContextFactory.DataContext.Players.Add( player );
+            dataContextFactory.DataContext.SaveChanges();
         }
 
         [TearDown]
         public void Cleanup()
         {
-            gameManager.Dispose();
+            dataContextFactory.Dispose();
         }
 
         [Test]
         public async Task Player_MoveNorth()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
-            await playerManger.MovePlayerAsync( "north" );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
+            await playerManager!.MovePlayerAsync( "north" );
 
-            Assert.That( gameManager.DataContext.Players.First().Y, Is.EqualTo( 2 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().Y, Is.EqualTo( 2 ) );
         }
 
         [Test]
         public async Task Player_MoveNorthMax()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
 
             for ( int i = 0; i < 10; i++ )
             {
-                await playerManger.MovePlayerAsync( "north" );
+                await playerManager!.MovePlayerAsync( "north" );
             }
 
-            Assert.That( gameManager.DataContext.Players.First().Y, Is.EqualTo( 10 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().Y, Is.EqualTo( 10 ) );
         }
 
         [Test]
         public async Task Player_MoveSouth()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
-            await playerManger.MovePlayerAsync( "south" );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
+            await playerManager!.MovePlayerAsync( "south" );
 
 
-            Assert.That( gameManager.DataContext.Players.First().Y, Is.EqualTo( 0 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().Y, Is.EqualTo( 0 ) );
         }
 
         [Test]
         public async Task Player_MoveSouthMax()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
 
             for ( int i = 0; i < 10; i++ )
             {
-                await playerManger.MovePlayerAsync( "south" );
+                await playerManager!.MovePlayerAsync( "south" );
             }
 
-            Assert.That( gameManager.DataContext.Players.First().Y, Is.EqualTo( 0 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().Y, Is.EqualTo( 0 ) );
         }
 
         [Test]
         public async Task Player_MoveEast()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
-            await playerManger.MovePlayerAsync( "east" );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
+            await playerManager!.MovePlayerAsync( "east" );
 
 
-            Assert.That( gameManager.DataContext.Players.First().X, Is.EqualTo( 2 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().X, Is.EqualTo( 2 ) );
         }
 
         [Test]
         public async Task Player_MoveEastMax()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
 
             for ( int i = 0; i < 10; i++ )
             {
-                await playerManger.MovePlayerAsync( "east" );
+                await playerManager!.MovePlayerAsync( "east" );
             }
 
-            Assert.That( gameManager.DataContext.Players.First().X, Is.EqualTo( 10 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().X, Is.EqualTo( 10 ) );
         }
 
         [Test]
         public async Task Player_MoveWest()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
-            await playerManger.MovePlayerAsync( "west" );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
+            await playerManager!.MovePlayerAsync( "west" );
 
 
-            Assert.That( gameManager.DataContext.Players.First().X, Is.EqualTo( 0 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().X, Is.EqualTo( 0 ) );
         }
 
         [Test]
         public async Task Player_MoveWestMax()
         {
-            var playerManger = await gameManager.GetPlayerManagerAsync( PLAYER_ID.ToString() );
+            var playerManager = await playerManagerBuilder.FromKeyAsync( PassKey );
 
             for ( int i = 0; i < 10; i++ )
             {
-                await playerManger.MovePlayerAsync( "west" );
+                await playerManager!.MovePlayerAsync( "west" );
             }
 
-            Assert.That( gameManager.DataContext.Players.First().X, Is.EqualTo( 0 ) );
+            Assert.That( dataContextFactory.DataContext.Players.First().X, Is.EqualTo( 0 ) );
         }
     }
 }

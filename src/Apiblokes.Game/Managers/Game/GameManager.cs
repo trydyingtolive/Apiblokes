@@ -9,9 +9,9 @@ public class GameManager : IGameManager
     private readonly IDataContext context;
     private readonly IBlokeManagerBuilder blokeManagerBuilder;
 
-    public GameManager( IDataContext context, IBlokeManagerBuilder blokeManagerBuilder )
+    public GameManager( IDataContextFactory dataContextFactory, IBlokeManagerBuilder blokeManagerBuilder )
     {
-        this.context = context;
+        this.context = dataContextFactory.CreateContext();
         this.blokeManagerBuilder = blokeManagerBuilder;
     }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Apiblokes.Game.Data;
-using Apiblokes.Game.Helpers;
+﻿using Apiblokes.Game.Helpers;
 using Microsoft.Extensions.Hosting;
 
 namespace Apiblokes.Game.Managers.Blokes;
@@ -21,6 +15,7 @@ public class WorldPopulationManager : BackgroundService
         while ( true )
         {
             await RefreshBlokesAsync();
+            await Task.Delay( 60 * 1000 );
         }
     }
 
@@ -49,7 +44,7 @@ public class WorldPopulationManager : BackgroundService
 
     private async Task PopulateBlokesAsync()
     {
-        var numberOfBlokes = (await blokeManagerBuilder.AllFromWorldMapAsync()).Count();
+        var numberOfBlokes = ( await blokeManagerBuilder.AllFromWorldMapAsync() ).Count();
         Random r = new Random();
 
         while ( numberOfBlokes < Constants.MaxNumberOfWorldBlokes )

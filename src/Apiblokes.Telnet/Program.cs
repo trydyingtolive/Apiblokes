@@ -11,9 +11,11 @@ HostApplicationBuilder builder = Host.CreateApplicationBuilder( args );
 var db = new DataContext();
 db.Database.EnsureCreated();
 
-builder.Services.AddScoped<IDataContext, DataContext>();
+builder.Services.AddScoped<IDataContextFactory, DataContextFactory>();
 builder.Services.AddScoped<IGameManager, GameManager>();
 builder.Services.AddScoped<IBlokeManagerBuilder, BlokeManagerBuilder>();
+
+builder.Services.AddHostedService<WorldPopulationManager>();
 
 builder.Services.AddHostedService<TelnetServer>();
 

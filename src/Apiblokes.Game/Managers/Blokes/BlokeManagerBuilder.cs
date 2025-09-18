@@ -5,11 +5,11 @@ namespace Apiblokes.Game.Managers.Blokes;
 
 public class BlokeManagerBuilder : IBlokeManagerBuilder
 {
-    private readonly IDataContext dataContext;
+    private readonly IDataContextFactory dataContextFactory;
 
-    public BlokeManagerBuilder( IDataContext dataContext )
+    public BlokeManagerBuilder( IDataContextFactory dataContextFactory )
     {
-        this.dataContext = dataContext;
+        this.dataContextFactory = dataContextFactory;
     }
 
     public async Task<BlokeManager?> FromId( string id )
@@ -19,6 +19,7 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
             return default;
         }
 
+        var dataContext = dataContextFactory.CreateContext();
         var bloke = await dataContext.Blokes.FirstOrDefaultAsync( b => b.Id == blokeId );
 
         if ( bloke == null )
@@ -33,6 +34,7 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
     {
         var bloke = BlokeCreator.CreateStarterBloke( playerId );
 
+        var dataContext = dataContextFactory.CreateContext();
         dataContext.Blokes.Add( bloke );
         await dataContext.SaveChangesAsync();
 
@@ -43,6 +45,7 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
     {
         var bloke = BlokeCreator.CreateBloke( x, y );
 
+        var dataContext = dataContextFactory.CreateContext();
         dataContext.Blokes.Add( bloke );
         await dataContext.SaveChangesAsync();
 
@@ -51,6 +54,7 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
 
     public async Task<List<BlokeManager>> AllFromWorldMapAsync()
     {
+        var dataContext = dataContextFactory.CreateContext();
         var blokes = await dataContext.Blokes.Where( b => b.PlayerId == null ).ToListAsync();
 
         return blokes
@@ -60,6 +64,7 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
 
     public async Task<List<BlokeManager>> AllFromPlayerInventory( Guid playerId )
     {
+        var dataContext = dataContextFactory.CreateContext();
         var blokes = await dataContext.Blokes.Where( b => b.PlayerId == playerId ).ToListAsync();
 
         return blokes

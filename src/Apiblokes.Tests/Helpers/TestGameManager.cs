@@ -6,31 +6,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Tests.Helpers
 {
-    internal class TestGameManager : IGameManager, IDisposable
+    public class TestGameManager : IGameManager, IDisposable
     {
-        public TestDataContext DataContext { get; set; }
-        private SqliteConnection connection;
+        
         private IBlokeManagerBuilder blokeManagerBuilder;
+        public TestDataContextFactory DataContextFactory;
+
+        public TestDataContext DataContext { get => DataContextFactory.DataContext; }
+
 
         public TestGameManager()
         {
-            connection = new SqliteConnection( "DataSource=:memory:" );
-            connection.Open();
-
-            var options = new DbContextOptionsBuilder<TestDataContext>()
-            .UseSqlite( connection )
-            .Options;
-
-            DataContext = new TestDataContext( options );
-            DataContext.Database.EnsureCreated();
-
-            blokeManagerBuilder = new BlokeManagerBuilder(DataContext);
+            DataContextFactory = new TestDataContextFactory();
+            blokeManagerBuilder = new BlokeManagerBuilder( DataContextFactory );
         }
 
         public void Dispose()
         {
-            connection?.Dispose();
-            DataContext.Dispose();
+      
         }
 
         public async Task<PlayerManager> GetPlayerManagerAsync( string playerId )

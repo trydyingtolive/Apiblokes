@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Tests.Helpers;
 
-internal class TestDataContext : DbContext, IDataContext
+public class TestDataContext : DbContext, IDataContext
 {
     public DbSet<Player> Players { get; set; }
     public DbSet<Bloke> Blokes { get; set; }

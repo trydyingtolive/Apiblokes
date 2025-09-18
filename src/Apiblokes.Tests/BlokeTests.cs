@@ -12,7 +12,7 @@ public class BlokeTests
     {
         var testManager = new TestGameManager();
 
-        var worldPopulationManager = new WorldPopulationManager( new BlokeManagerBuilder( testManager.DataContext ) );
+        var worldPopulationManager = new WorldPopulationManager( new BlokeManagerBuilder( testManager.DataContextFactory ) );
 
         await worldPopulationManager.RefreshBlokesAsync();
         var blokes = await testManager.DataContext.Blokes.ToListAsync();

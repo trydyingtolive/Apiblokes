@@ -25,8 +25,6 @@ public class WorldPopulationManager : BackgroundService
         await PopulateBlokesAsync();
     }
 
-
-
     private async Task RemoveOldBlokesAsync()
     {
         var worldBlokes = await blokeManagerBuilder.AllFromWorldMapAsync();

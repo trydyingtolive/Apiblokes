@@ -1,4 +1,6 @@
-﻿namespace Apiblokes.Telnet.Commanding;
+﻿using Apiblokes.Game.Managers.Players;
+
+namespace Apiblokes.Telnet.Commanding;
 
 internal static class Commands
 {
@@ -8,21 +10,49 @@ internal static class Commands
         {
             CommandStrings = ["help","h"],
             Description = "Gets available commands",
-            CommandAction = (text, playerManager) => { return Task.FromResult( HelpCommand()); }
+            CommandAction = (command, arguments, playerManager) => { return Task.FromResult( HelpCommand()); }
         },
         new Command
         {
             CommandStrings = ["look", "l"],
             Description = "Look at the world you are in.",
-            CommandAction = async (text,playerManager) => {  return await playerManager.GetStatusAsync();  }
+            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.GetStatusAsync();  }
         },
         new Command
         {
-            CommandStrings = ["move", "m"],
-            Description = "Moves your player north, south, east, or west. Ex: move w",
-            CommandAction = async (text,playerManager) => { await playerManager.MovePlayerAsync(text); return await playerManager.GetStatusAsync(); }
+            CommandStrings = ["inventory", "i"],
+            Description = "Dig through your pockets and report on contents",
+            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.GetInventoryAsync();  }
+        },
+        new Command
+        {
+            CommandStrings = ["move", "m", "n", "s", "e", "w"],
+            Description = "Moves your player north, south, east, or west. Can be shortened to just 'n' 's' 'e' or 'w'",
+            CommandAction = MoveCommand
         }
     };
+
+    private async static Task<string> MoveCommand( string command, string arguments, PlayerManager playerManager )
+    {
+        switch ( command )
+        {
+            case "move":
+            case "m":
+                await playerManager
+            .MovePlayerAsync( arguments );
+                break;
+            case "n":
+            case "s":
+            case "e":
+            case "w":
+                await playerManager
+            .MovePlayerAsync( command );
+                break;
+            default:
+                break;
+        }
+        return await playerManager.GetStatusAsync();
+    }
 
     private static string HelpCommand()
     {

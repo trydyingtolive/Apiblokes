@@ -1,7 +1,5 @@
 ﻿using Apiblokes.Game.Data;
-using Apiblokes.Game.Helpers;
 using Apiblokes.Game.Model;
-using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Game.Managers.Blokes;
 
@@ -16,7 +14,9 @@ public class BlokeManager
     }
 
     public DateTime CreatedDateTime { get => bloke.CreatedDateTime; }
-
+    public string Name { get => bloke.Name; }
+    public string Type { get => bloke.Type.ToString(); }
+    public int Health { get => bloke.Health; }
 
     public async Task FireBlokeAsync()
     {

@@ -1,4 +1,5 @@
 ﻿using Apiblokes.Game.Data;
+using Apiblokes.Game.Model;
 using Microsoft.EntityFrameworkCore;
 
 namespace Apiblokes.Game.Managers.Blokes;
@@ -66,6 +67,16 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
     {
         var dataContext = dataContextFactory.CreateContext();
         var blokes = await dataContext.Blokes.Where( b => b.PlayerId == playerId ).ToListAsync();
+
+        return blokes
+            .Select( b => new BlokeManager( dataContext, b ) )
+            .ToList();
+    }
+
+    public async Task<List<BlokeManager>> AllFromWorldLocation( int x, int y )
+    {
+        var dataContext = dataContextFactory.CreateContext();
+        var blokes = await dataContext.Blokes.Where( b => b.PlayerId == null && b.X == x && b.Y == y ).ToListAsync();
 
         return blokes
             .Select( b => new BlokeManager( dataContext, b ) )

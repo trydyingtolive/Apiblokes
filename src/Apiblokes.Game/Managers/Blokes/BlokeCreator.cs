@@ -8,9 +8,9 @@ public static class BlokeCreator
     public static Bloke CreateStarterBloke( Guid playerId )
     {
         var bloke = CreateBlokeFromType( BlokeType.Manager );
-        
+
         bloke.PlayerId = playerId;
-        
+
         return bloke;
     }
 
@@ -84,9 +84,9 @@ public static class BlokeCreator
         }
         if ( seed < 50 )
         {
-            if ( locationX < 5 )
+            if ( locationX < ( Constants.XMaximum / 2 ) )
             {
-                if ( locationY < 5 )
+                if ( locationY < ( Constants.YMaximum / 2 ) )
                 {
                     type = BlokeType.HelpDesk;
                 }
@@ -97,7 +97,7 @@ public static class BlokeCreator
             }
             else
             {
-                if ( locationY < 5 )
+                if ( locationY < ( Constants.YMaximum / 2 ) )
                 {
                     type = BlokeType.Network;
                 }

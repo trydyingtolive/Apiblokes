@@ -1,4 +1,5 @@
-﻿using Apiblokes.Game.Data;
+﻿using System.ComponentModel.Design;
+using Apiblokes.Game.Data;
 using Apiblokes.Game.Helpers;
 using Apiblokes.Game.Managers.Blokes;
 using Apiblokes.Game.Model;
@@ -23,11 +24,6 @@ public class PlayerManager
 
     public async Task MovePlayerAsync( string direction )
     {
-        if ( player == null )
-        {
-            return;
-        }
-
         var simpleDir = direction.ToLower().FirstOrDefault();
 
         switch ( simpleDir )
@@ -56,13 +52,41 @@ public class PlayerManager
 
     public async Task<string> GetStatusAsync()
     {
-        if ( player == null )
+        var localBlokes = await blokeManagerBuilder.AllFromWorldLocation( player.X, player.Y );
+
+        var response = $"\r\nYou are in a vast field.  \r\nLocation: {player.X}:{player.Y}";
+
+        if ( localBlokes.Any() )
         {
-            return "You must first create a player.";
+            response += "\r\n\r\n  You can see:";
+            foreach ( var bloke in localBlokes )
+            {
+                response += $"\r\n    {bloke.Name}: {bloke.Type} Type";
+            }
         }
 
+        return response;
+    }
+
+    public async Task<string> GetInventoryAsync()
+    {
         var blokes = await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
 
-        return $"\r\nYou are in a vast field. You see wild Apiblokes scattering before you. \r\nLocation: {player.X}:{player.Y} You have {blokes.Count} blokes.";
+        var response =  $"\r\nInventory:";
+
+        if ( blokes.Any() )
+        {
+            response += "\r\n  Blokes:";
+            foreach ( var bloke in blokes )
+            {
+                response += $"\r\n    {bloke.Name}: {bloke.Type} Type ({bloke.Health}HP)";
+            }
+        }
+        else
+        {
+            response += "You have no blokes. You cannot continue.";
+        }
+        
+        return response;
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using Apiblokes.Game.Data;
+﻿using Apiblokes.Game.Data;
 using Apiblokes.Game.Helpers;
 using Apiblokes.Game.Managers.Blokes;
 using Apiblokes.Game.Model;
@@ -14,6 +13,9 @@ public class PlayerManager
 
     public string PassKey { get => player.PassKey; }
     public string? Name { get => player.Name; }
+    public Guid Id { get => player.Id; }
+    public int X { get => player.X; }
+    public int Y { get => player.Y; }
 
     public PlayerManager( Player player, IDataContext dataContext, IBlokeManagerBuilder blokeManagerBuilder )
     {
@@ -72,7 +74,7 @@ public class PlayerManager
     {
         var blokes = await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
 
-        var response =  $"\r\nInventory:";
+        var response = $"\r\nInventory:";
 
         if ( blokes.Any() )
         {
@@ -86,7 +88,12 @@ public class PlayerManager
         {
             response += "You have no blokes. You cannot continue.";
         }
-        
+
         return response;
+    }
+
+    public async Task<string> AttemptAttack( string arguments )
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,4 +1,5 @@
-﻿using Apiblokes.Game.Data;
+﻿using System.Threading.Tasks;
+using Apiblokes.Game.Data;
 using Apiblokes.Game.Model;
 
 namespace Apiblokes.Game.Managers.Blokes;
@@ -15,12 +16,21 @@ public class BlokeManager
 
     public DateTime CreatedDateTime { get => bloke.CreatedDateTime; }
     public string Name { get => bloke.Name; }
-    public string Type { get => bloke.Type.ToString(); }
+    public BlokeType Type { get => bloke.Type; }
     public int Health { get => bloke.Health; }
+    public double HitProbability { get => bloke.HitProbability; }
+    public int Damage { get => bloke.Damage; }
 
     public async Task FireBlokeAsync()
     {
         dataContext.Blokes.Remove( bloke );
+        await dataContext.SaveChangesAsync();
+    }
+
+    public async Task TakeDamageAsync( int damage )
+    {
+        bloke.Health -= damage;
+        bloke.Health = Math.Max( bloke.Health, 0 );
         await dataContext.SaveChangesAsync();
     }
 }

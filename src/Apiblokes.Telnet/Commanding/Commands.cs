@@ -29,6 +29,12 @@ internal static class Commands
             CommandStrings = ["move", "m", "n", "s", "e", "w"],
             Description = "Moves your player north, south, east, or west. Can be shortened to just 'n' 's' 'e' or 'w'",
             CommandAction = MoveCommand
+        },
+        new Command
+        {
+            CommandStrings = ["attack", "a"],
+            Description = "Attacks bloke with one from your inventory. Ex: 'attack Stew Martin with Azana Yoder'",
+            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.AttemptAttack(arguments);  }
         }
     };
 

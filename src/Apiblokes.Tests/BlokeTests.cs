@@ -10,13 +10,13 @@ public class BlokeTests
     [Test]
     public async Task PopulateBlokes()
     {
-        var testManager = new TestGameManager();
+        TestDataContextFactory dataContextFactory = new TestDataContextFactory();
 
-        var worldPopulationManager = new WorldPopulationManager( new BlokeManagerBuilder( testManager.DataContextFactory ) );
+        var worldPopulationManager = new WorldPopulationManager( new BlokeManagerBuilder( dataContextFactory ) );
 
         await worldPopulationManager.RefreshBlokesAsync();
-        var blokes = await testManager.DataContext.Blokes.ToListAsync();
-        Assert.That( testManager.DataContext.Blokes.Count(), Is.EqualTo( Constants.MaxNumberOfWorldBlokes ) );
+        var blokes = await dataContextFactory.DataContext.Blokes.ToListAsync();
+        Assert.That( dataContextFactory.DataContext.Blokes.Count(), Is.EqualTo( Constants.MaxNumberOfWorldBlokes ) );
     }
 
 }

@@ -59,11 +59,23 @@ public class BattleManager
 
         if ( result <= attackingBloke.HitProbability )
         {
-            await defendingBloke.TakeDamageAsync( attackingBloke.Damage );
-            output.Add( $"{attackingBloke.Name} does {attackingBloke.Damage} points of damage. {defendingBloke.Name} has {defendingBloke.Health} remaining." );
+            if ( defendingBloke.Health > 0 )
+            {
+                await defendingBloke.TakeDamageAsync( attackingBloke.Damage );
+                output.Add( string.Format( BattleFlavor.SuccessfulAttack( attackingBloke.Type, defendingBloke.Type ), attackingBloke.Name, defendingBloke.Name ) );
+                output.Add( $"{attackingBloke.Name} does {attackingBloke.Damage} points of damage. {defendingBloke.Name} has {defendingBloke.Health} remaining." );
+            }
+            else
+            {
+                output.Add( $"{defendingBloke.Name} was barely hanging on to life, but that didn't stop {attackingBloke.Name} from completing the vicious attack." +
+                    $" After the carnage has finished, {attackingBloke.Name} turns to you. Their blood lust eyes meet yours seeking approval." );
+                await defendingBloke.FireBlokeAsync();
+                return output;
+            }
         }
         else
         {
+            output.Add( string.Format( BattleFlavor.FailedAttack( attackingBloke.Type, defendingBloke.Type ), attackingBloke.Name, defendingBloke.Name ) );
             output.Add( "The attack failed" );
         }
 
@@ -73,20 +85,23 @@ public class BattleManager
             return output;
         }
 
+        output.Add( $"{defendingBloke.Name} counter attacks." );
+
         result = r.NextDouble();
         if ( result <= defendingBloke.HitProbability )
         {
             await attackingBloke.TakeDamageAsync( defendingBloke.Damage );
+            output.Add( string.Format( BattleFlavor.SuccessfulAttack( defendingBloke.Type, attackingBloke.Type ), defendingBloke.Name, attackingBloke.Name ) );
             output.Add( $"{defendingBloke.Name} does {defendingBloke.Damage} points of damage. {attackingBloke.Name} has {attackingBloke.Health} remaining." );
         }
         else
         {
+            output.Add( string.Format( BattleFlavor.FailedAttack( defendingBloke.Type, attackingBloke.Type ) , defendingBloke.Name, attackingBloke.Name) );
             output.Add( "The counter attack failed" );
         }
 
         return output;
     }
-
 }
 
 public class BattleRequestOptions

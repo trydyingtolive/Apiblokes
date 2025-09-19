@@ -86,7 +86,7 @@ public class BattleTests
         };
         var output = await BattleManager.SetupBattleAsync( blokeManagerBuilder, options );
 
-        await output!.Item1!.ProcessBattleAsync(); 
+        var battleText = await output!.Item1!.ProcessBattleAsync(); 
     }
 
     [Test]

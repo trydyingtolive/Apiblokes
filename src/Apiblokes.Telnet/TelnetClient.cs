@@ -192,7 +192,13 @@ public class TelnetClient
                         return;
                     }
 
-                    await _writer.WriteLineAsync( await command.CommandAction( commandText, argumentText, playerManager ) );
+                    var commandResponses = await command.CommandAction( commandText, argumentText, playerManager );
+
+                    foreach ( var response in commandResponses )
+                    {
+                        await _writer.WriteLineAsync( response );
+                        await Task.Delay( 500 );
+                    }
                 }
                 return;
             }

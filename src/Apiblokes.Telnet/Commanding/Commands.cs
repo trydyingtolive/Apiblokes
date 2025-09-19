@@ -10,19 +10,19 @@ internal static class Commands
         {
             CommandStrings = ["help","h"],
             Description = "Gets available commands",
-            CommandAction = (command, arguments, playerManager) => { return Task.FromResult( HelpCommand()); }
+            CommandAction = (command, arguments, playerManager) => { return Task.FromResult( new[] { HelpCommand() } ); }
         },
         new Command
         {
             CommandStrings = ["look", "l"],
             Description = "Look at the world you are in.",
-            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.GetStatusAsync();  }
+            CommandAction = async (command, arguments,playerManager) => {  return  [await playerManager.GetStatusAsync()];  }
         },
         new Command
         {
             CommandStrings = ["inventory", "i"],
             Description = "Dig through your pockets and report on contents",
-            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.GetInventoryAsync();  }
+            CommandAction = async (command, arguments,playerManager) => {  return [await playerManager.GetInventoryAsync()];  }
         },
         new Command
         {
@@ -38,7 +38,7 @@ internal static class Commands
         }
     };
 
-    private async static Task<string> MoveCommand( string command, string arguments, PlayerManager playerManager )
+    private async static Task<string[]> MoveCommand( string command, string arguments, PlayerManager playerManager )
     {
         switch ( command )
         {
@@ -57,7 +57,7 @@ internal static class Commands
             default:
                 break;
         }
-        return await playerManager.GetStatusAsync();
+        return [await playerManager.GetStatusAsync()];
     }
 
     private static string HelpCommand()

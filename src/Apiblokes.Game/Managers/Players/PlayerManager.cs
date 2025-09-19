@@ -1,5 +1,6 @@
 ﻿using Apiblokes.Game.Data;
 using Apiblokes.Game.Helpers;
+using Apiblokes.Game.Managers.Battle;
 using Apiblokes.Game.Managers.Blokes;
 using Apiblokes.Game.Model;
 
@@ -92,8 +93,26 @@ public class PlayerManager
         return response;
     }
 
-    public async Task<string> AttemptAttack( string arguments )
+    public async Task<string[]> AttemptAttack( string arguments )
     {
-        throw new NotImplementedException();
+        var output = new List<string>();
+        var options = new BattleRequestOptions
+        {
+            AvailablePlayerBlokes = await blokeManagerBuilder.AllFromPlayerInventory( player.Id ),
+            RequestText = arguments,
+            X = player.X,
+            Y = player.Y
+        };
+
+        var (battleManager, text) = await BattleManager.SetupBattleAsync( blokeManagerBuilder, options );
+
+        output.Add( text );
+
+        if ( battleManager != null )
+        {
+            output.AddRange( await battleManager.ProcessBattleAsync() );
+        }
+
+        return output.ToArray();
     }
 }

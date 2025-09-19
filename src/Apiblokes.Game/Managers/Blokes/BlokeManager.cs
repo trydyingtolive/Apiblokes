@@ -33,4 +33,11 @@ public class BlokeManager
         bloke.Health = Math.Max( bloke.Health, 0 );
         await dataContext.SaveChangesAsync();
     }
+
+    public async Task<int> RestoreHealthAsync()
+    {
+        bloke.Health = bloke.MaxHealth;
+        await dataContext.SaveChangesAsync();
+        return bloke.Health;
+    }
 }

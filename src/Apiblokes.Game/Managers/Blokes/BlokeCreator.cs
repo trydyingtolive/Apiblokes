@@ -39,31 +39,37 @@ public static class BlokeCreator
             case BlokeType.Manager: //pretty common pretty bad
                 bloke.Damage = 1;
                 bloke.Health = 10;
+                bloke.MaxHealth = 10;
                 bloke.HitProbability = 0.3f;
                 break;
             case BlokeType.HelpDesk: //Tanky but ok hit prob
                 bloke.Damage = 5;
                 bloke.Health = 30;
+                bloke.MaxHealth = 30;
                 bloke.HitProbability = 0.5f;
                 break;
             case BlokeType.SystemAdmin: //Good hit prob ok other stats
                 bloke.Damage = 7;
                 bloke.Health = 20;
+                bloke.MaxHealth = 20;
                 bloke.HitProbability = 0.8f;
                 break;
             case BlokeType.Network: //Middle stats
                 bloke.Damage = 7;
                 bloke.Health = 25;
+                bloke.MaxHealth = 25;
                 bloke.HitProbability = 0.5f;
                 break;
             case BlokeType.Developer: //Glass cannon
                 bloke.Damage = 15;
                 bloke.Health = 12;
+                bloke.MaxHealth = 12;
                 bloke.HitProbability = 0.7f;
                 break;
             case BlokeType.DoItAll: //Rare and epic
                 bloke.Damage = 15;
                 bloke.Health = 30;
+                bloke.MaxHealth = 30;
                 bloke.HitProbability = 0.9f;
                 break;
         }

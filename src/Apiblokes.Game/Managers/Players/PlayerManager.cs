@@ -73,7 +73,7 @@ public class PlayerManager
 
     public async Task<string> GetInventoryAsync()
     {
-        var blokes = await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
+        var blokes = await GetPersonalBlokes();
 
         var response = $"\r\nInventory:";
 
@@ -98,7 +98,7 @@ public class PlayerManager
         var output = new List<string>();
         var options = new BattleRequestOptions
         {
-            AvailablePlayerBlokes = await blokeManagerBuilder.AllFromPlayerInventory( player.Id ),
+            AvailablePlayerBlokes = await GetPersonalBlokes(),
             RequestText = arguments,
             X = player.X,
             Y = player.Y
@@ -114,5 +114,10 @@ public class PlayerManager
         }
 
         return output.ToArray();
+    }
+
+    public async Task<List<BlokeManager>> GetPersonalBlokes()
+    {
+        return await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
     }
 }

@@ -1,54 +1,82 @@
-﻿using Apiblokes.Game.Managers.Players;
+﻿using Apiblokes.Game.Managers.Items;
+using Apiblokes.Game.Managers.Players;
 
 namespace Apiblokes.Telnet.Commanding;
 
 public class Commands
 {
-    public List<Command> ActiveCommands { get; set; } = new List<Command>
+    private readonly IUsableItemFactory usableItemFactory;
+    public List<Command> ActiveCommands { get; set; } = new List<Command>();
+    public Commands( IUsableItemFactory usableItemFactory )
     {
-        new Command
+        SetupActiveCommands();
+        this.usableItemFactory = usableItemFactory;
+    }
+
+    private void SetupActiveCommands()
+    {
+
+        ActiveCommands.Add( new Command
         {
-            CommandStrings = ["help","h"],
+            CommandStrings = ["help", "h"],
             Description = "Gets available commands"
-        },
-        new Command
+        } );
+
+        ActiveCommands.Add( new Command
         {
             CommandStrings = ["look", "l"],
             Description = "Look at the world you are in.",
-            CommandAction = async (command, arguments,playerManager) => {  return  [await playerManager.GetStatusAsync()];  }
-        },
-        new Command
+            CommandAction = async ( command, arguments, playerManager ) => { return [await playerManager.GetStatusAsync()]; }
+        } );
+
+        ActiveCommands.Add( new Command
         {
             CommandStrings = ["inventory", "i"],
             Description = "Dig through your pockets and report on contents",
-            CommandAction = async (command, arguments,playerManager) => {  return [await playerManager.GetInventoryAsync()];  }
-        },
-        new Command
+            CommandAction = async ( command, arguments, playerManager ) => { return [await playerManager.GetInventoryAsync()]; }
+        } );
+
+        ActiveCommands.Add( new Command
         {
             CommandStrings = ["move", "m", "n", "s", "e", "w"],
             Description = "Moves your player north, south, east, or west. Can be shortened to just 'n' 's' 'e' or 'w'",
             CommandAction = MoveCommand
-        },
-        new Command
+        } );
+
+        ActiveCommands.Add( new Command
         {
             CommandStrings = ["attack", "a"],
             Description = "Attacks bloke with one from your inventory. Ex: 'attack Stew Martin with Azana Yoder'",
-            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.AttemptAttackAsync(arguments); }
-        },
-        new Command
+            CommandAction = async ( command, arguments, playerManager ) => { return await playerManager.AttemptAttackAsync( arguments ); }
+        } );
+
+        ActiveCommands.Add( new Command
         {
             CommandStrings = ["r"],
             Description = "Repeats the last action. Useful for battles.",
-            CommandAction = async( command, arguments, playerManager) =>{  return []; }
-        },
-        new Command
+        } );
+
+        ActiveCommands.Add( new Command
         {
             CommandStrings = ["use"],
-            Description ="Uses an item or building"
-        }
-    };
+            Description = "Uses an item or building",
+            CommandAction = UseCommand
+        });
+    }
 
-    private static async Task<string[]> MoveCommand( string command, string arguments, PlayerManager playerManager )
+    private async Task<string[]> UseCommand( string commands, string arguments, PlayerManager playerManager )
+    {
+        var item = usableItemFactory.GetUsableItem( playerManager, arguments );
+        
+        if ( item == null )
+        {
+            return ["Could not determine item to use"];
+        }
+
+        return [await item.UseItemAsync()];
+    }
+
+    private async Task<string[]> MoveCommand( string command, string arguments, PlayerManager playerManager )
     {
         switch ( command )
         {

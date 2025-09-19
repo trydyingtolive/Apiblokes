@@ -2,15 +2,14 @@
 
 namespace Apiblokes.Telnet.Commanding;
 
-internal static class Commands
+public class Commands
 {
-    public static List<Command> ActiveCommands { get; set; } = new List<Command>
+    public List<Command> ActiveCommands { get; set; } = new List<Command>
     {
         new Command
         {
             CommandStrings = ["help","h"],
-            Description = "Gets available commands",
-            CommandAction = (command, arguments, playerManager) => { return Task.FromResult( new[] { HelpCommand() } ); }
+            Description = "Gets available commands"
         },
         new Command
         {
@@ -34,16 +33,22 @@ internal static class Commands
         {
             CommandStrings = ["attack", "a"],
             Description = "Attacks bloke with one from your inventory. Ex: 'attack Stew Martin with Azana Yoder'",
-            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.AttemptAttack(arguments);  }
+            CommandAction = async (command, arguments,playerManager) => {  return await playerManager.AttemptAttackAsync(arguments); }
         },
         new Command
         {
             CommandStrings = ["r"],
             Description = "Repeats the last action. Useful for battles.",
+            CommandAction = async( command, arguments, playerManager) =>{  return []; }
+        },
+        new Command
+        {
+            CommandStrings = ["use"],
+            Description ="Uses an item or building"
         }
     };
 
-    private async static Task<string[]> MoveCommand( string command, string arguments, PlayerManager playerManager )
+    private static async Task<string[]> MoveCommand( string command, string arguments, PlayerManager playerManager )
     {
         switch ( command )
         {
@@ -65,7 +70,7 @@ internal static class Commands
         return [await playerManager.GetStatusAsync()];
     }
 
-    private static string HelpCommand()
+    public string HelpCommand()
     {
         var output = string.Empty;
         foreach ( var command in ActiveCommands )

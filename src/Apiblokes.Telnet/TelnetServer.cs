@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using Apiblokes.Game.Managers.Players;
+using Apiblokes.Telnet.Commanding;
 using Microsoft.Extensions.Hosting;
 
 namespace Apiblokes.Telnet;
@@ -13,14 +14,16 @@ public class TelnetServer : BackgroundService
     private bool _isRunning;
     private readonly List<TelnetClient> _clients;
     private readonly object _clientsLock = new object();
+    private readonly Commands commands;
 
     private readonly IPlayerManagerBuilder _playerManagerBuilder;
 
-    public TelnetServer( IPlayerManagerBuilder playerManagerBuilder )
+    public TelnetServer( IPlayerManagerBuilder playerManagerBuilder, Commands commands )
     {
         _listener = new TcpListener( IPAddress.Any, _port );
         _clients = new List<TelnetClient>();
         _playerManagerBuilder = playerManagerBuilder;
+        this.commands = commands;
     }
 
     public async Task StartAsync()
@@ -35,7 +38,7 @@ public class TelnetServer : BackgroundService
             try
             {
                 var tcpClient = await _listener.AcceptTcpClientAsync();
-                var telnetClient = new TelnetClient( tcpClient, this, _playerManagerBuilder );
+                var telnetClient = new TelnetClient( tcpClient, this, _playerManagerBuilder, commands );
 
                 lock ( _clientsLock )
                 {

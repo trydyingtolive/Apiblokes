@@ -93,7 +93,7 @@ public class PlayerManager
         return response;
     }
 
-    public async Task<string[]> AttemptAttack( string arguments )
+    public async Task<string[]> AttemptAttackAsync( string arguments )
     {
         var output = new List<string>();
         var options = new BattleRequestOptions

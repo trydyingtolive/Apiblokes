@@ -2,7 +2,7 @@
 
 namespace Apiblokes.Telnet.Commanding;
 
-internal class Command
+public class Command
 {
     public string[] CommandStrings { get; set; } = [];
     public string Description { get; set; } = string.Empty;

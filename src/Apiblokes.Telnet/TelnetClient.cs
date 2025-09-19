@@ -12,6 +12,7 @@ public class TelnetClient
     private readonly StreamReader _reader;
     private readonly StreamWriter _writer;
     private readonly TelnetServer _server;
+    private readonly Commands _commands;
     private string? _playerName;
     private string? _playerPassKey;
     private string _lastMessage = string.Empty;
@@ -20,7 +21,10 @@ public class TelnetClient
 
     public bool IsConnected => _tcpClient?.Connected ?? false;
 
-    public TelnetClient( TcpClient tcpClient, TelnetServer server, IPlayerManagerBuilder playerManagerBuilder )
+    public TelnetClient( TcpClient tcpClient,
+        TelnetServer server,
+        IPlayerManagerBuilder playerManagerBuilder,
+        Commands commands )
     {
         _tcpClient = tcpClient;
         _server = server;
@@ -28,6 +32,7 @@ public class TelnetClient
         _reader = new StreamReader( _stream, Encoding.ASCII );
         _writer = new StreamWriter( _stream, Encoding.ASCII ) { AutoFlush = true };
         _playerManagerBuilder = playerManagerBuilder;
+        _commands = commands;
     }
 
     public async Task HandleAsync()
@@ -188,7 +193,13 @@ public class TelnetClient
             return;
         }
 
-        foreach ( var command in Commands.ActiveCommands )
+        if ( commandText == "h" || commandText == "help" )
+        {
+            await _writer.WriteLineAsync( _commands.HelpCommand() );
+            return;
+        }
+
+        foreach ( var command in _commands.ActiveCommands )
         {
             if ( command.CommandStrings.Contains( commandText ) )
             {

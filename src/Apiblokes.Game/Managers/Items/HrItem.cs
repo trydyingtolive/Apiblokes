@@ -4,32 +4,37 @@ using Apiblokes.Game.Managers.Players;
 
 namespace Apiblokes.Game.Managers.Items;
 
-public class HospitalItem : IUsableItem
+public class HrItem : IUsableItem
 {
-    private const int X = Constants.XMinimum;
-    private const int Y = Constants.YMinimum;
+    private const int X = Constants.XMaximum;
+    private const int Y = Constants.YMaximum;
 
     private readonly PlayerManager playerManager;
     private readonly string? predicate;
     private BlokeManager? blokeManager;
 
-    public HospitalItem( PlayerManager playerManager, string? predicate )
+    public HrItem( PlayerManager playerManager, string? predicate )
     {
         this.playerManager = playerManager;
         this.predicate = predicate;
     }
-
     public async Task<string[]> UseItemAsync()
     {
         await EnsureBlokeAsync();
 
         if ( blokeManager == null )
         {
-            return ["Could not locate Apibloke to heal"];
+            return ["Could not locate Apibloke to send to HR"];
         }
 
-        var hp = await blokeManager.RestoreHealthAsync();
-        return [$"{blokeManager.Name} health has been restored to {hp}HP"];
+        var money = await blokeManager.FireBlokeAsync();
+        await playerManager.AddMoney( money );
+        return [$"{blokeManager.Name} enters HR and the door shuts behind them. ",
+            $"After a minute you hear faint crying.",
+            $"You have been paid {money} Apibucks for your betrayal."
+        ];
+
+
     }
 
     private async Task EnsureBlokeAsync()

@@ -21,10 +21,27 @@ public class BlokeManager
     public double HitProbability { get => bloke.HitProbability; }
     public int Damage { get => bloke.Damage; }
 
-    public async Task FireBlokeAsync()
+    public async Task<int> FireBlokeAsync()
     {
         dataContext.Blokes.Remove( bloke );
         await dataContext.SaveChangesAsync();
+
+        //how much money each one returns
+        switch ( Type )
+        {
+            case BlokeType.Manager:
+                return 1;
+            case BlokeType.HelpDesk:
+            case BlokeType.Network:
+            case BlokeType.SystemAdmin:
+            case BlokeType.Developer:
+                return 5;
+            case BlokeType.DoItAll:
+                return 25;
+            default:
+                return 1;
+        }
+
     }
 
     public async Task TakeDamageAsync( int damage )

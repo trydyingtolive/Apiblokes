@@ -28,6 +28,8 @@ public class UsableItemFactory : IUsableItemFactory
         {
             case "hospital":
                 return new HospitalItem( playerManager, predicate );
+            case "hr":
+                return new HrItem( playerManager, predicate );
             default:
                 break;
         }

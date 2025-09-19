@@ -73,7 +73,7 @@ public class Commands
             return ["Could not determine item to use"];
         }
 
-        return [await item.UseItemAsync()];
+        return await item.UseItemAsync();
     }
 
     private async Task<string[]> MoveCommand( string command, string arguments, PlayerManager playerManager )

@@ -2,5 +2,5 @@
 
 public interface IUsableItem
 {
-    Task<string> UseItemAsync();
+    Task<string[]> UseItemAsync();
 }

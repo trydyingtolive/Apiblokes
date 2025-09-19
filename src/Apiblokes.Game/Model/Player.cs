@@ -9,6 +9,8 @@ public class Player
 
     public string PassKey { get; set; } = Utilities.RandomString( 6 );
 
+    public int Money { get; set; } = 0;
+
     public int X { get; set; } = 5;
     public int Y { get; set; } = 5;
 }

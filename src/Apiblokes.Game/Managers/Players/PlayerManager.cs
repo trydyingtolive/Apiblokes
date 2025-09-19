@@ -77,6 +77,8 @@ public class PlayerManager
 
         var response = $"\r\nInventory:";
 
+        response += $"\r\n{player.Money} Apibucks";
+
         if ( blokes.Any() )
         {
             response += "\r\n  Blokes:";
@@ -87,7 +89,7 @@ public class PlayerManager
         }
         else
         {
-            response += "You have no blokes. You cannot continue.";
+            response += "\r\nYou have no blokes. You cannot continue.";
         }
 
         return response;
@@ -119,5 +121,11 @@ public class PlayerManager
     public async Task<List<BlokeManager>> GetPersonalBlokes()
     {
         return await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
+    }
+
+    public async Task AddMoney( int money )
+    {
+        player.Money += money;
+        await dataContext.SaveChangesAsync();
     }
 }

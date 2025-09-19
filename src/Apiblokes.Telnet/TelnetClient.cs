@@ -14,6 +14,7 @@ public class TelnetClient
     private readonly TelnetServer _server;
     private string? _playerName;
     private string? _playerPassKey;
+    private string _lastMessage = string.Empty;
 
     private readonly IPlayerManagerBuilder _playerManagerBuilder;
 
@@ -164,6 +165,14 @@ public class TelnetClient
 
     private async Task ProcessCommand( string message )
     {
+        if ( message.Trim().ToLower() == "r" )
+        {
+            await ProcessCommand( _lastMessage );
+            return;
+        }
+
+        _lastMessage = message;
+
         (string commandText, string argumentText) = ParseMessage( message );
 
         if ( string.IsNullOrEmpty( commandText ) )

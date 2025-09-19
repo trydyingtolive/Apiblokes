@@ -35,6 +35,11 @@ internal static class Commands
             CommandStrings = ["attack", "a"],
             Description = "Attacks bloke with one from your inventory. Ex: 'attack Stew Martin with Azana Yoder'",
             CommandAction = async (command, arguments,playerManager) => {  return await playerManager.AttemptAttack(arguments);  }
+        },
+        new Command
+        {
+            CommandStrings = ["r"],
+            Description = "Repeats the last action. Useful for battles.",
         }
     };
 

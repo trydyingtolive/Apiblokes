@@ -17,6 +17,7 @@ public class PlayerManager
     public Guid Id { get => player.Id; }
     public int X { get => player.X; }
     public int Y { get => player.Y; }
+    public int Money { get => player.Money; }
 
     public PlayerManager( Player player, IDataContext dataContext, IBlokeManagerBuilder blokeManagerBuilder )
     {
@@ -77,7 +78,10 @@ public class PlayerManager
 
         var response = $"\r\nInventory:";
 
-        response += $"\r\n{player.Money} Apibucks";
+        response += $"\r\n  Apibucks: {player.Money} ";
+
+        response += $"\r\n  Cubicles: {player.Level2Catchers}";
+        response += $"\r\n  Offices: {player.Level3Catchers}";
 
         if ( blokes.Any() )
         {
@@ -123,9 +127,26 @@ public class PlayerManager
         return await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
     }
 
-    public async Task AddMoney( int money )
+    public async Task AddMoneyAsync( int money )
     {
         player.Money += money;
         await dataContext.SaveChangesAsync();
+    }
+
+    public async Task AddCatcherAsync( int catcherLevel, int quantity )
+    {
+        if (catcherLevel == 2 )
+        {
+            player.Level2Catchers += quantity;
+            player.Level2Catchers = Math.Max(0, player.Level2Catchers);
+            await dataContext.SaveChangesAsync();
+        }
+
+        if ( catcherLevel == 3 )
+        {
+            player.Level3Catchers += quantity;
+            player.Level3Catchers = Math.Max( 0, player.Level3Catchers );
+            await dataContext.SaveChangesAsync();
+        }
     }
 }

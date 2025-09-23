@@ -28,7 +28,7 @@ public class HrItem : IUsableItem
         }
 
         var money = await blokeManager.FireBlokeAsync();
-        await playerManager.AddMoney( money );
+        await playerManager.AddMoneyAsync( money );
         return [$"{blokeManager.Name} enters HR and the door shuts behind them. ",
             $"After a minute you hear faint crying.",
             $"You have been paid {money} Apibucks for your betrayal."

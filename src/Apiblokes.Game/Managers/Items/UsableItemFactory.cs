@@ -26,10 +26,12 @@ public class UsableItemFactory : IUsableItemFactory
 
         switch ( subject )
         {
-            case "hospital":
-                return new HospitalItem( playerManager, predicate );
+            case "coffee":
+                return new CoffeeMakerItem( playerManager, predicate );
             case "hr":
                 return new HrItem( playerManager, predicate );
+            case "vending":
+                return new VendingMachineItem( playerManager );
             default:
                 break;
         }

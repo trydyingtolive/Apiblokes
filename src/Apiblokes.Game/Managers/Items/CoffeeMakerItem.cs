@@ -4,7 +4,7 @@ using Apiblokes.Game.Managers.Players;
 
 namespace Apiblokes.Game.Managers.Items;
 
-public class HospitalItem : IUsableItem
+public class CoffeeMakerItem : IUsableItem
 {
     private const int X = Constants.XMinimum;
     private const int Y = Constants.YMinimum;
@@ -13,7 +13,7 @@ public class HospitalItem : IUsableItem
     private readonly string? predicate;
     private BlokeManager? blokeManager;
 
-    public HospitalItem( PlayerManager playerManager, string? predicate )
+    public CoffeeMakerItem( PlayerManager playerManager, string? predicate )
     {
         this.playerManager = playerManager;
         this.predicate = predicate;

@@ -14,6 +14,8 @@ public class Bloke
     public int Health { get; set; } = 100;
     public int MaxHealth { get; set; } = 100;
 
+    public int Experience { get; set; } = 0;
+
     public int X { get; set; }
     public int Y { get; set; }
 

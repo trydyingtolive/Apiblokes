@@ -8,6 +8,6 @@ namespace Apiblokes.Game.Managers.Blokes
         Task<List<BlokeManager>> AllFromWorldMapAsync();
         Task<BlokeManager?> FromId( string id );
         Task<BlokeManager> FromStarterAsync( Guid playerId );
-        Task<BlokeManager> FromWorldSpawn( int x, int y );
+        Task<BlokeManager> FromWorldSpawnAsync( int x, int y );
     }
 }

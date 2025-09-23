@@ -47,7 +47,7 @@ public class WorldPopulationManager : BackgroundService
 
         while ( numberOfBlokes < Constants.MaxNumberOfWorldBlokes )
         {
-            await blokeManagerBuilder.FromWorldSpawn( r.Next( Constants.XMinimum, Constants.XMaximum + 1 ), r.Next( Constants.YMinimum, Constants.YMaximum + 1 ) );
+            await blokeManagerBuilder.FromWorldSpawnAsync( r.Next( Constants.XMinimum, Constants.XMaximum + 1 ), r.Next( Constants.YMinimum, Constants.YMaximum + 1 ) );
             numberOfBlokes++;
         }
 

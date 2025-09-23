@@ -57,4 +57,57 @@ public class BlokeManager
         await dataContext.SaveChangesAsync();
         return bloke.Health;
     }
+
+    public async Task<string?> AddExperienceAsync( int hp )
+    {
+        bloke.Experience += hp;
+        await dataContext.SaveChangesAsync();
+
+        if ( ExperienceIsLevelUp( hp ) )
+        {
+            return await LevelUpBlokeAsync();
+        }
+        return default;
+    }
+
+    private async Task<string?> LevelUpBlokeAsync()
+    {
+        var r = new Random();
+        switch ( r.Next( 0, 3 ) )
+        {
+            case 0:
+                bloke.Health += 5;
+                bloke.MaxHealth += 5;
+                await dataContext.SaveChangesAsync();
+                return $"{bloke.Name} gained 5 max health. ({bloke.MaxHealth})";
+            case 1:
+                bloke.Damage += 2;
+                await dataContext.SaveChangesAsync();
+                return $"{bloke.Name} gained 2 damage ({bloke.Damage})";
+            case 2:
+                bloke.HitProbability += 0.5f;
+                await dataContext.SaveChangesAsync();
+                return $"{bloke.Name} gained .5 hit chance. {bloke.HitProbability}";
+            default:
+                return default;
+        }
+
+    }
+
+
+    //Level ups happen on a Fibonacci scale --fast then slow
+    private bool ExperienceIsLevelUp( int hp, int a = 1, int b = 2 )
+    {
+        if ( hp == a )
+        {
+            return true;
+        }
+
+        if ( hp < a )
+        {
+            return false;
+        }
+
+        return ExperienceIsLevelUp( hp, b, a + b );
+    }
 }

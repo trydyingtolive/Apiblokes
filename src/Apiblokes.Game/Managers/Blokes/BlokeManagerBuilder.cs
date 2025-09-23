@@ -42,7 +42,7 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
         return new BlokeManager( dataContext, bloke );
     }
 
-    public async Task<BlokeManager> FromWorldSpawn( int x, int y )
+    public async Task<BlokeManager> FromWorldSpawnAsync( int x, int y )
     {
         var bloke = BlokeCreator.CreateBloke( x, y );
 

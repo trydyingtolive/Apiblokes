@@ -96,8 +96,14 @@ public class BattleManager
         }
         else
         {
-            output.Add( string.Format( BattleFlavor.FailedAttack( defendingBloke.Type, attackingBloke.Type ) , defendingBloke.Name, attackingBloke.Name) );
+            output.Add( string.Format( BattleFlavor.FailedAttack( defendingBloke.Type, attackingBloke.Type ), defendingBloke.Name, attackingBloke.Name ) );
             output.Add( "The counter attack failed" );
+        }
+
+        string? hpResponse = await attackingBloke.AddExperienceAsync( 1 );
+        if ( !string.IsNullOrEmpty( hpResponse ) )
+        {
+            output.Add( hpResponse );
         }
 
         return output;

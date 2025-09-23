@@ -7,6 +7,22 @@ namespace Apiblokes.Tests;
 
 public class BlokeTests
 {
+    TestDataContextFactory testDataContextFactory;
+
+    [SetUp]
+    public async Task Setup()
+    {
+        testDataContextFactory = new TestDataContextFactory();
+
+    }
+
+    [TearDown]
+    public void Teardown()
+    {
+        testDataContextFactory.Dispose();
+    }
+
+
     [Test]
     public async Task PopulateBlokes()
     {
@@ -17,6 +33,36 @@ public class BlokeTests
         await worldPopulationManager.RefreshBlokesAsync();
         var blokes = await dataContextFactory.DataContext.Blokes.ToListAsync();
         Assert.That( dataContextFactory.DataContext.Blokes.Count(), Is.EqualTo( Constants.MaxNumberOfWorldBlokes ) );
+    }
+
+    [Test]
+    public async Task BlokeLevelUp()
+    {
+        var builder = new BlokeManagerBuilder( testDataContextFactory );
+        var blokeManager = await builder.FromWorldSpawnAsync( 0, 0 );
+
+        var baseBloke = testDataContextFactory.DataContext.Blokes.First();
+        var health = baseBloke.Health;
+        var damage = baseBloke.Damage;
+        var hit = baseBloke.HitProbability;
+
+        await blokeManager.AddExperienceAsync( 1 );
+
+        var bloke = testDataContextFactory.DataContext.Blokes.First();
+
+        Assert.That( bloke.Experience, Is.EqualTo( 1 ) );
+
+        var somethingWasUpdated = false;
+
+        if (baseBloke.MaxHealth != health
+            || baseBloke.Damage != damage 
+            || baseBloke.HitProbability != hit )
+        {
+            somethingWasUpdated = true;
+        }
+
+        Assert.That(somethingWasUpdated, Is.True );
+            
     }
 
 }

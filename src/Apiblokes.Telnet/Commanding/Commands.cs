@@ -62,9 +62,17 @@ public class Commands
             Description = "Uses an item or building",
             CommandAction = UseCommand
         });
+
+        ActiveCommands.Add( new Command
+        {
+            CommandStrings = ["capture", "cap"],
+            Description = "Attempts to capture an Apibloke.",
+             CommandAction = async ( command, arguments, playerManager ) => { return await playerManager.AttemptCaptureAsync( arguments ); }
+        } );
     }
 
-    private async Task<string[]> UseCommand( string commands, string arguments, PlayerManager playerManager )
+
+    private async Task<string[]> UseCommand( string command, string arguments, PlayerManager playerManager )
     {
         var item = usableItemFactory.GetUsableItem( playerManager, arguments );
         

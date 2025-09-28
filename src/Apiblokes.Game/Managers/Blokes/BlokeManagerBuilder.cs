@@ -73,7 +73,7 @@ public class BlokeManagerBuilder : IBlokeManagerBuilder
             .ToList();
     }
 
-    public async Task<List<BlokeManager>> AllFromWorldLocation( int x, int y )
+    public async Task<List<BlokeManager>> AllFromWorldLocationAsync( int x, int y )
     {
         var dataContext = dataContextFactory.CreateContext();
         var blokes = await dataContext.Blokes.Where( b => b.PlayerId == null && b.X == x && b.Y == y ).ToListAsync();

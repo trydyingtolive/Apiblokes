@@ -14,12 +14,34 @@ public class BlokeManager
         this.bloke = bloke;
     }
 
+    public Guid Id { get => bloke.Id; }
     public DateTime CreatedDateTime { get => bloke.CreatedDateTime; }
     public string Name { get => bloke.Name; }
     public BlokeType Type { get => bloke.Type; }
     public int Health { get => bloke.Health; }
     public double HitProbability { get => bloke.HitProbability; }
     public int Damage { get => bloke.Damage; }
+
+    public int CaptureLevel
+    {
+        get
+        {
+            switch ( Type )
+            {
+                case BlokeType.HelpDesk:
+                case BlokeType.Network:
+                case BlokeType.SystemAdmin:
+                case BlokeType.Developer:
+                    return 2;
+                case BlokeType.DoItAll:
+                    return 3;
+                case BlokeType.Manager:
+                default:
+                    return 1;
+            }
+        }
+    }
+
 
     public async Task<int> FireBlokeAsync()
     {
@@ -109,5 +131,14 @@ public class BlokeManager
         }
 
         return ExperienceIsLevelUp( hp, b, a + b );
+    }
+
+    public async Task MoveToPlayer( Guid id )
+    {
+        bloke.PlayerId = id;
+        bloke.X = null;
+        bloke.Y = null;
+
+        await dataContext.SaveChangesAsync();
     }
 }

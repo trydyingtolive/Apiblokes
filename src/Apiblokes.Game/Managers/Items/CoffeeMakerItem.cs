@@ -49,7 +49,7 @@ public class CoffeeMakerItem : IUsableItem
             return;
         }
 
-        var playerBlokes = await playerManager.GetPersonalBlokes();
+        var playerBlokes = await playerManager.GetPersonalBlokesAsync();
         blokeManager = playerBlokes.FirstOrDefault( b => b.Name.ToLower().Contains( predicate ) );
     }
 }

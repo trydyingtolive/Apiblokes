@@ -56,7 +56,7 @@ public class PlayerManager
 
     public async Task<string> GetStatusAsync()
     {
-        var localBlokes = await blokeManagerBuilder.AllFromWorldLocation( player.X, player.Y );
+        var localBlokes = await blokeManagerBuilder.AllFromWorldLocationAsync( player.X, player.Y );
 
         var response = $"\r\nYou are in a vast field.  \r\nLocation: {player.X}:{player.Y}";
 
@@ -74,7 +74,7 @@ public class PlayerManager
 
     public async Task<string> GetInventoryAsync()
     {
-        var blokes = await GetPersonalBlokes();
+        var blokes = await GetPersonalBlokesAsync();
 
         var response = $"\r\nInventory:";
 
@@ -104,7 +104,7 @@ public class PlayerManager
         var output = new List<string>();
         var options = new BattleRequestOptions
         {
-            AvailablePlayerBlokes = await GetPersonalBlokes(),
+            AvailablePlayerBlokes = await GetPersonalBlokesAsync(),
             RequestText = arguments,
             X = player.X,
             Y = player.Y
@@ -122,7 +122,7 @@ public class PlayerManager
         return output.ToArray();
     }
 
-    public async Task<List<BlokeManager>> GetPersonalBlokes()
+    public async Task<List<BlokeManager>> GetPersonalBlokesAsync()
     {
         return await blokeManagerBuilder.AllFromPlayerInventory( player.Id );
     }
@@ -135,10 +135,10 @@ public class PlayerManager
 
     public async Task AddCatcherAsync( int catcherLevel, int quantity )
     {
-        if (catcherLevel == 2 )
+        if ( catcherLevel == 2 )
         {
             player.Level2Catchers += quantity;
-            player.Level2Catchers = Math.Max(0, player.Level2Catchers);
+            player.Level2Catchers = Math.Max( 0, player.Level2Catchers );
             await dataContext.SaveChangesAsync();
         }
 
@@ -148,5 +148,68 @@ public class PlayerManager
             player.Level3Catchers = Math.Max( 0, player.Level3Catchers );
             await dataContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<string[]> AttemptCaptureAsync( string arguments )
+    {
+        BlokeManager? blokeManager = null;
+        var blokeManagers = await blokeManagerBuilder
+            .AllFromWorldLocationAsync( player.X, player.Y );
+
+        if ( blokeManagers.Count == 0 )
+        {
+            return ["There are no blokes at your current location."];
+        }
+        else if ( blokeManagers.Count == 1 )
+        {
+            blokeManager = blokeManagers[0];
+        }
+        else
+        {
+            blokeManager = blokeManagers
+               .FirstOrDefault( b => b.Name.ToLower().Contains( arguments.ToLower().Trim() ) );
+        }
+
+        if ( blokeManager == null )
+        {
+            return [$"Could not find an Apibloke named: {arguments.Trim()}"];
+        }
+
+        if ( blokeManager.Health != 0 )
+        {
+            return [$"{blokeManager.Name} laughs at your pitiful attempt. (Apiblokes must be at 0 health to capture.)"];
+        }
+
+        if ( blokeManager.CaptureLevel == 2 )
+        {
+            if ( player.Level2Catchers >= 1 )
+            {
+                await AddCatcherAsync( 2, -1 );
+            }
+            else if ( player.Level3Catchers >= 1 )
+            {
+                await AddCatcherAsync( 3, -1 );
+            }
+            else
+            {
+                return [$"{blokeManager.Name} requires a minimum of a {Constants.Level2CatcherName} to capture."];
+            }
+        }
+
+        if ( blokeManager.CaptureLevel == 3 )
+        {
+            if ( player.Level3Catchers >= 1 )
+            {
+                await AddCatcherAsync( 3, -1 );
+            }
+            else
+            {
+                return [$"{blokeManager.Name} requires a {Constants.Level3CatcherName} to capture."];
+            }
+        }
+
+        await blokeManager.MoveToPlayer( player.Id );
+
+        return [$"{blokeManager.Name} thankful to be employed joins your team."];
     }
 }

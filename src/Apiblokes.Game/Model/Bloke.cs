@@ -16,8 +16,8 @@ public class Bloke
 
     public int Experience { get; set; } = 0;
 
-    public int X { get; set; }
-    public int Y { get; set; }
+    public int? X { get; set; }
+    public int? Y { get; set; }
 
     public Guid? PlayerId { get; set; }
 

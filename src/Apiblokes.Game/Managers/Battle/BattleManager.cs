@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using Apiblokes.Game.Managers.Blokes;
+﻿using Apiblokes.Game.Managers.Blokes;
 
 namespace Apiblokes.Game.Managers.Battle;
 
@@ -27,7 +21,7 @@ public class BattleManager
             return (null, "Battle failed: Could not find player Apibloke");
         }
 
-        var localBlokes = await blokeManagerBuilder.AllFromWorldLocation( options.X, options.Y );
+        var localBlokes = await blokeManagerBuilder.AllFromWorldLocationAsync( options.X, options.Y );
         var defendingBloke = localBlokes.FirstOrDefault( b => b.Name.ToLower().Contains( parts[0].Trim() ) );
         if ( defendingBloke == null )
         {

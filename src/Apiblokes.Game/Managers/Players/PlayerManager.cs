@@ -26,6 +26,13 @@ public class PlayerManager
         this.blokeManagerBuilder = blokeManagerBuilder;
     }
 
+    public event EventHandler OnGlobalNotification;
+
+    protected virtual void NotifyGlobally( GlobalNotificationArgs e )
+    {
+        OnGlobalNotification?.Invoke( this, e );
+    }
+
     public async Task MovePlayerAsync( string direction )
     {
         var simpleDir = direction.ToLower().FirstOrDefault();
@@ -209,6 +216,15 @@ public class PlayerManager
         }
 
         await blokeManager.MoveToPlayer( player.Id );
+
+        //Notify everyone that we captured a non-common
+        if ( blokeManager.CaptureLevel > 1 )
+        {
+            NotifyGlobally( new GlobalNotificationArgs
+            {
+                Message = $"{player.Name} captured a {blokeManager.Type}"
+            } );
+        }
 
         return [$"{blokeManager.Name} is thankful to be employed joins your team."];
     }

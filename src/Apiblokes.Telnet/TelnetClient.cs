@@ -127,12 +127,26 @@ public class TelnetClient
             return;
         }
 
+        playerManager.OnGlobalNotification += PlayerManager_OnGlobalNotification;
+
         _playerName = playerManager.Name;
         _playerPassKey = playerManager.PassKey;
 
         await _writer.WriteLineAsync( $"Welcome back {_playerName}" );
         await _writer.WriteLineAsync( "" );
         await _writer.WriteLineAsync( await playerManager.GetStatusAsync() );
+    }
+
+    private void PlayerManager_OnGlobalNotification( object? sender, EventArgs e )
+    {
+        if ( e is GlobalNotificationArgs args )
+        {
+            var globalMessage = e as GlobalNotificationArgs;
+            if ( globalMessage?.Message != null )
+            {
+                _server.BroadcastMessage( globalMessage.Message );
+            }
+        }
     }
 
     private async Task CreateUser()
@@ -166,6 +180,8 @@ public class TelnetClient
         await _writer.WriteLineAsync( "" );
 
         await _writer.WriteLineAsync( await playerManager.GetStatusAsync() );
+
+        playerManager.OnGlobalNotification += PlayerManager_OnGlobalNotification;
     }
 
     private async Task ProcessCommand( string message )

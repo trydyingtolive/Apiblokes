@@ -33,8 +33,6 @@ public class HrItem : IUsableItem
             $"After a minute you hear faint crying.",
             $"You have been paid {money} Apibucks for your betrayal."
         ];
-
-
     }
 
     private async Task EnsureBlokeAsync()

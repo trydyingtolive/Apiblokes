@@ -98,18 +98,18 @@ public class BlokeManager
         switch ( r.Next( 0, 3 ) )
         {
             case 0:
-                bloke.Health += 5;
+                bloke.Health += 2;
                 bloke.MaxHealth += 5;
                 await dataContext.SaveChangesAsync();
                 return $"{bloke.Name} gained 5 max health. ({bloke.MaxHealth})";
             case 1:
-                bloke.Damage += 2;
+                bloke.Damage += 1;
                 await dataContext.SaveChangesAsync();
-                return $"{bloke.Name} gained 2 damage ({bloke.Damage})";
+                return $"{bloke.Name} gained 1 damage ({bloke.Damage})";
             case 2:
-                bloke.HitProbability += 0.5f;
+                bloke.HitProbability += 0.05f;
                 await dataContext.SaveChangesAsync();
-                return $"{bloke.Name} gained .5 hit chance. {bloke.HitProbability}";
+                return $"{bloke.Name} gained .05 hit chance. {bloke.HitProbability}";
             default:
                 return default;
         }

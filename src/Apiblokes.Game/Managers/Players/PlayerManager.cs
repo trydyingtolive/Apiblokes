@@ -58,7 +58,7 @@ public class PlayerManager
     {
         var localBlokes = await blokeManagerBuilder.AllFromWorldLocationAsync( player.X, player.Y );
 
-        var response = $"\r\nYou are in a vast field.  \r\nLocation: {player.X}:{player.Y}";
+        var response = $"\r\n{LocationFlavor.GetLocationFlavor( player.X, player.Y )}  \r\nLocation: {player.X}:{player.Y}";
 
         if ( localBlokes.Any() )
         {
@@ -210,6 +210,6 @@ public class PlayerManager
 
         await blokeManager.MoveToPlayer( player.Id );
 
-        return [$"{blokeManager.Name} thankful to be employed joins your team."];
+        return [$"{blokeManager.Name} is thankful to be employed joins your team."];
     }
 }

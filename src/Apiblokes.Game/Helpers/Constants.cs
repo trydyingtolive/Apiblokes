@@ -6,7 +6,7 @@ public static class Constants
     public const int XMaximum = 10;
     public const int YMinimum = 0;
     public const int YMaximum = 10;
-    public const int MaxNumberOfWorldBlokes = 25;
+    public const int MaxNumberOfWorldBlokes = 40;
 
     public const string Level2CatcherName = "Cubical";
     public const string Level3CatcherName = "Office";

@@ -186,6 +186,7 @@ public class TelnetClient
 
     private async Task ProcessCommand( string message )
     {
+        //Repeat Last Task
         if ( message.Trim().ToLower() == "r" )
         {
             await ProcessCommand( _lastMessage );
@@ -202,6 +203,7 @@ public class TelnetClient
             return;
         }
 
+        //Exit
         if ( commandText == "quit" || commandText == "exit" )
         {
             await _writer.WriteLineAsync( "Goodbye!" );
@@ -209,6 +211,7 @@ public class TelnetClient
             return;
         }
 
+        //Help
         if ( commandText == "h" || commandText == "help" )
         {
             await _writer.WriteLineAsync( _commands.HelpCommand() );
@@ -268,7 +271,7 @@ public class TelnetClient
         }
 
 
-        return (firstString.ToLower(), secondString);
+        return (firstString.ToLower().Trim(), secondString);
     }
 
     public void SendMessage( string message )

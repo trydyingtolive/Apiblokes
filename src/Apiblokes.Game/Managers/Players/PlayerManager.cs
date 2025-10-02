@@ -76,6 +76,12 @@ public class PlayerManager
             }
         }
 
+        var signText = SignTextHelper.GetSignText(player.X, player.Y);
+        if (signText != null )
+        {
+            response += $"\r\n\r\nThere is a sign here. (type 'read sign' to read it)";
+        }
+
         return response;
     }
 

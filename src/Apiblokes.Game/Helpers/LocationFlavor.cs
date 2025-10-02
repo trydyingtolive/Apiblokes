@@ -5,11 +5,9 @@ public static class LocationFlavor
     public static string[] GetLocationFlavor( int x, int y )
     {
         //Starting Location
-        if (x== Constants.XStart && y == Constants.YStart )
+        if ( x == Constants.XStart && y == Constants.YStart )
         {
-            return ["You are in the center of the Apiblokes world.",
-                "There is a sign with information on it.",
-                "(type 'read sign' to read the sign)"];
+            return ["You are in the center of the Apiblokes world."];
         }
 
         //Special text

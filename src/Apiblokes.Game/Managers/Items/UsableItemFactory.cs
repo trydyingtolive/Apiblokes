@@ -32,6 +32,8 @@ public class UsableItemFactory : IUsableItemFactory
                 return new HrItem( playerManager, predicate );
             case "vending":
                 return new VendingMachineItem( playerManager );
+            case "sign":
+                return new SignItem( playerManager );
             default:
                 break;
         }

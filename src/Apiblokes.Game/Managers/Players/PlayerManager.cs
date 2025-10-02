@@ -65,7 +65,7 @@ public class PlayerManager
     {
         var localBlokes = await blokeManagerBuilder.AllFromWorldLocationAsync( player.X, player.Y );
 
-        var response = $"\r\n{LocationFlavor.GetLocationFlavor( player.X, player.Y )}  \r\nLocation: {player.X}:{player.Y}";
+        var response = $"\r\n{string.Join( "\r\n", LocationFlavor.GetLocationFlavor( player.X, player.Y ) )}  \r\nLocation: {player.X}:{player.Y}";
 
         if ( localBlokes.Any() )
         {

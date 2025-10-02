@@ -58,7 +58,7 @@ public class Commands
 
         ActiveCommands.Add( new Command
         {
-            CommandStrings = ["use"],
+            CommandStrings = ["use", "read"],
             Description = "Uses an item or building",
             CommandAction = UseCommand
         });

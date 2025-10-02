@@ -4,10 +4,18 @@ public static class LocationFlavor
 {
     public static string[] GetLocationFlavor( int x, int y )
     {
+        //Starting Location
+        if (x== Constants.XStart && y == Constants.YStart )
+        {
+            return ["You are in the center of the Apiblokes world.",
+                "There is a sign with information on it.",
+                "(type 'read sign' to read the sign)"];
+        }
+
         //Special text
         if ( x == Constants.XMaximum && y == Constants.YMaximum )
         {
-            return ["You emerge from the tangle office life to find a lone vending machine",
+            return ["You emerge from the tangle of office life to find a lone vending machine",
                 $"\"1 {Constants.Level2CatcherName} for 10 Apibucks\"",
                 "\"Allows capturing of uncommon blokes\"",
                 "(type 'use vending' to purchase)"
@@ -16,16 +24,16 @@ public static class LocationFlavor
 
         if ( x == Constants.XMaximum && y == Constants.YMinimum )
         {
-            return ["You emerge from the tangle office life to find a lone vending machine",
+            return ["You emerge from the tangle of office life to find a lone vending machine",
                 $"\"1 {Constants.Level3CatcherName} for 10 Apibucks\"",
                 "\"Allows capturing of uncommon blokes\"",
                 "(type 'use vending' to purchase)"
             ];
         }
 
-        if ( x == Constants.XMaximum && y == Constants.YMaximum )
+        if ( x == Constants.XMinimum && y == Constants.YMaximum )
         {
-            return ["You emerge from the tangle office life to find the HR department",
+            return ["You emerge from the tangle of office life to find the HR department.",
                 $"Here you can fire your Apiblokes in return for Apibucks.",
                 "(type 'use hr on <bloke name>' to fire bloke)"
             ];
@@ -33,7 +41,7 @@ public static class LocationFlavor
 
         if ( x == Constants.XMinimum && y == Constants.YMinimum )
         {
-            return ["You emerge from the tangle office life to find the coffee maker.",
+            return ["You emerge from the tangle of office life to find the coffee maker.",
                 $"Listed as a \"benefit\" of the job, you see a hoard of IT workers gathered around it's gurgling chassis. Their coffee mugs held over bowed heads, hoping for a dredge of  ",
                 "(type 'use hr on <bloke name>' to fire bloke)"
             ];

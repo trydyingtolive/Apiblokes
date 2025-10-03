@@ -5,7 +5,7 @@ namespace Apiblokes.Game.Managers.Items
 {
     public class SignItem : IUsableItem
     {
-        private const string SIGN_MARKER = "============================================================================================";
+        private const string SIGN_MARKER = "==============================================================================";
 
         PlayerManager playerManager;
 

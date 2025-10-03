@@ -11,7 +11,7 @@ public static class LocationFlavor
         }
 
         //Special text
-        if ( x == Constants.XMaximum && y == Constants.YMaximum )
+        if ( x == Constants.XMinimum && y == Constants.YMaximum )
         {
             return ["You emerge from the tangle of office life to find a lone vending machine",
                 $"\"1 {Constants.Level2CatcherName} for 10 Apibucks\"",
@@ -23,13 +23,13 @@ public static class LocationFlavor
         if ( x == Constants.XMaximum && y == Constants.YMinimum )
         {
             return ["You emerge from the tangle of office life to find a lone vending machine",
-                $"\"1 {Constants.Level3CatcherName} for 10 Apibucks\"",
+                $"\"1 {Constants.Level3CatcherName} for 50 Apibucks\"",
                 "\"Allows capturing of uncommon blokes\"",
                 "(type 'use vending' to purchase)"
             ];
         }
 
-        if ( x == Constants.XMinimum && y == Constants.YMaximum )
+        if ( x == Constants.XMaximum && y == Constants.YMaximum )
         {
             return ["You emerge from the tangle of office life to find the HR department.",
                 $"Here you can fire your Apiblokes in return for Apibucks.",
@@ -41,7 +41,7 @@ public static class LocationFlavor
         {
             return ["You emerge from the tangle of office life to find the coffee maker.",
                 $"Listed as a \"benefit\" of the job, you see a hoard of IT workers gathered around it's gurgling chassis. Their coffee mugs held over bowed heads, hoping for a dredge of  ",
-                "(type 'use hr on <bloke name>' to fire bloke)"
+                "(type 'use coffee on <bloke name>' to heal bloke)"
             ];
         }
 

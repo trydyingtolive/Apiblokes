@@ -101,15 +101,15 @@ public class BlokeManager
                 bloke.Health += 2;
                 bloke.MaxHealth += 5;
                 await dataContext.SaveChangesAsync();
-                return $"{bloke.Name} gained 5 max health. ({bloke.MaxHealth})";
+                return $"**** {bloke.Name} gained 5 max health. ({bloke.MaxHealth}) ****";
             case 1:
                 bloke.Damage += 1;
                 await dataContext.SaveChangesAsync();
-                return $"{bloke.Name} gained 1 damage ({bloke.Damage})";
+                return $"**** {bloke.Name} gained 1 damage ({bloke.Damage}) ****";
             case 2:
                 bloke.HitProbability += 0.05f;
                 await dataContext.SaveChangesAsync();
-                return $"{bloke.Name} gained .05 hit chance. {bloke.HitProbability}";
+                return $"**** {bloke.Name} gained .05 hit chance. {bloke.HitProbability:0.00} ****";
             default:
                 return default;
         }

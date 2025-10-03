@@ -44,18 +44,15 @@ public class TelnetClient
 
             await GetOrCreateUser();
 
-            // Notify other clients
-            _server.BroadcastMessage( $"*** {_playerName} joined the server ***", this );
-
-
-
             // Main command loop
             while ( IsConnected )
             {
                 await _writer.WriteAsync( $"{_playerName}> " );
                 var output = await ReadInput();
-                await ProcessCommand( output );
-
+                if ( !string.IsNullOrEmpty( output ) )
+                {
+                    await ProcessCommand( output );
+                }
             }
         }
         catch ( Exception ex )
@@ -336,11 +333,6 @@ public class TelnetClient
     {
         try
         {
-            if ( IsConnected )
-            {
-                _server.BroadcastMessage( $"*** {_playerName} left the server ***", this );
-            }
-
             _reader?.Close();
             _writer?.Close();
             _stream?.Close();

@@ -20,6 +20,11 @@ public class HrItem : IUsableItem
     }
     public async Task<string[]> UseItemAsync()
     {
+        if ( playerManager.X != X || playerManager.Y != Y )
+        {
+            return [$"The HR department is not here. It can be located at {X}:{Y}"];
+        }
+
         await EnsureBlokeAsync();
 
         if ( blokeManager == null )
@@ -29,10 +34,26 @@ public class HrItem : IUsableItem
 
         var money = await blokeManager.FireBlokeAsync();
         await playerManager.AddMoneyAsync( money );
-        return [$"{blokeManager.Name} enters HR and the door shuts behind them. ",
+
+        var output = new List<string>
+        {
+            $"{blokeManager.Name} enters HR and the door shuts behind them. ",
             $"After a minute you hear faint crying.",
             $"You have been paid {money} Apibucks for your betrayal."
-        ];
+        };
+
+        if ( blokeManager.Type == Model.BlokeType.DoItAll )//rare
+        {
+            await playerManager.AddCatcherAsync( 3, 1 );
+            output.Add( $"A {Constants.Level3CatcherName} has been returned to your inventory" );
+        }
+        else if ( blokeManager.Type != Model.BlokeType.Manager ) //not common
+        {
+            await playerManager.AddCatcherAsync( 2, 1 );
+            output.Add( $"A {Constants.Level2CatcherName} has been returned to your inventory" );
+        }
+
+        return output.ToArray();
     }
 
     private async Task EnsureBlokeAsync()
@@ -43,11 +64,6 @@ public class HrItem : IUsableItem
         }
 
         if ( string.IsNullOrEmpty( predicate ) )
-        {
-            return;
-        }
-
-        if ( playerManager.X != X || playerManager.Y != Y )
         {
             return;
         }

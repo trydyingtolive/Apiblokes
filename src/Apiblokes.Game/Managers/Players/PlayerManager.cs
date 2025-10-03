@@ -232,6 +232,6 @@ public class PlayerManager
             } );
         }
 
-        return [$"{blokeManager.Name} is thankful to be employed joins your team."];
+        return [$"{blokeManager.Name}, thankful to be employed, joins your team."];
     }
 }

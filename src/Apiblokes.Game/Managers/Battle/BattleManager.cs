@@ -61,9 +61,13 @@ public class BattleManager
             }
             else
             {
-                output.Add( $"{defendingBloke.Name} was barely hanging on to life, but that didn't stop {attackingBloke.Name} from completing the vicious attack." +
-                    $" After the carnage has finished, {attackingBloke.Name} turns to you. Their blood lust eyes meet yours seeking approval." );
                 await defendingBloke.FireBlokeAsync();
+
+                output.Add( "" );
+                output.Add( "**** DEATH ****" );
+                output.Add( $"{defendingBloke.Name} was barely hanging on to life, but that didn't stop {attackingBloke.Name} from completing the vicious attack with a killing blow." +
+                    $" After the carnage has finished, {attackingBloke.Name} slowly turns to you. Their blood lust eyes meet yours seeking approval. {defendingBloke.Name}'s career is dead." );
+                output.Add( "" );
                 return output;
             }
         }

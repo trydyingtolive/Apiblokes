@@ -21,6 +21,11 @@ public class CoffeeMakerItem : IUsableItem
 
     public async Task<string[]> UseItemAsync()
     {
+        if ( playerManager.X != X || playerManager.Y != Y )
+        {
+            return [$"The Coffee Maker department is not here. It can be located at {X}:{Y}"];
+        }
+
         await EnsureBlokeAsync();
 
         if ( blokeManager == null )

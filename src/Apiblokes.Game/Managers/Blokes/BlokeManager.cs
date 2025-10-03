@@ -85,7 +85,7 @@ public class BlokeManager
         bloke.Experience += hp;
         await dataContext.SaveChangesAsync();
 
-        if ( ExperienceIsLevelUp( hp ) )
+        if ( ExperienceIsLevelUp( bloke.Experience ) )
         {
             return await LevelUpBlokeAsync();
         }
@@ -118,7 +118,7 @@ public class BlokeManager
 
 
     //Level ups happen on a Fibonacci scale --fast then slow
-    private bool ExperienceIsLevelUp( int hp, int a = 1, int b = 2 )
+    private bool ExperienceIsLevelUp( int hp, int a = 1, int b = 1 )
     {
         if ( hp == a )
         {

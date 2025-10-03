@@ -62,7 +62,37 @@ public class BlokeTests
         }
 
         Assert.That(somethingWasUpdated, Is.True );
-            
+    }
+
+    [Test]
+    public async Task BlokeNotLevelUpAt4()
+    {
+        var builder = new BlokeManagerBuilder( testDataContextFactory );
+        var blokeManager = await builder.FromWorldSpawnAsync( 0, 0 );
+
+        await blokeManager.AddExperienceAsync( 3 );
+
+        var baseBloke = testDataContextFactory.DataContext.Blokes.First();
+        var health = baseBloke.Health;
+        var damage = baseBloke.Damage;
+        var hit = baseBloke.HitProbability;
+
+        await blokeManager.AddExperienceAsync( 1 );
+
+        var bloke = testDataContextFactory.DataContext.Blokes.First();
+
+        Assert.That( bloke.Experience, Is.EqualTo( 4 ) );
+
+        var somethingWasUpdated = false;
+
+        if ( baseBloke.MaxHealth == health
+            && baseBloke.Damage == damage
+            && baseBloke.HitProbability == hit )
+        {
+            somethingWasUpdated = true;
+        }
+
+        Assert.That( somethingWasUpdated, Is.True );
     }
 
 }

@@ -68,39 +68,76 @@ public class TelnetClient
         }
     }
 
-    private async Task<string> ReadInput()
+    private async Task<string?> ReadInput()
     {
         var message = string.Empty;
         var c = new char[64];
+
+        var previousBuffer = new char[64];
+        var repeatCount = 0;
+
+        var isFirstRun = true;
 
         while ( IsConnected )
         {
 
             var len = await _reader.ReadAsync( c );
 
-            if ( len == 1 )
+
+            //If we loose connection it will just run in a loop. (Weird.)
+            if ( Enumerable.SequenceEqual( c, previousBuffer ) )
             {
-                if ( c[0] == '\b' )
+                repeatCount++;
+                if ( repeatCount >= 64 )
+                {
+                    Disconnect();
+                }
+            }
+            else
+            {
+                repeatCount = 0;
+            }
+
+            Array.Copy( c, previousBuffer, 64 );
+
+
+            //Some clients love to send command codes at the beginning.
+            //I don't want to handle them, so we will just ignore :D
+            //Maybe later fix
+            if ( isFirstRun && c[0] == '?' )
+            {
+                continue;
+            }
+            isFirstRun = false;
+
+            for ( var i = 0; i < len; i++ )
+            {
+                if ( c[i] == '\b' || c[i] == 127 )
                 {
                     if ( message.Length > 0 )
                     {
                         message = message.Substring( 0, message.Length - 1 );
-                        await _writer.WriteAsync( " \b" );
+                        await _writer.WriteAsync( " " + c[i] );
                     }
                 }
-                else
+                else if ( c[i] == '\n' )
                 {
-                    message += c[0];
+                    return message.Trim();
                 }
-            }
+                else if ( IsValidCharacter( c[i] ) )
+                {
+                    message += c[i];
+                }
 
-            if ( c[0] == '\n' || c[1] == '\n' ) //user pressed enter
-            {
-                break;
             }
         }
 
-        return message;
+        return default;
+    }
+
+    private bool IsValidCharacter( char ch )
+    {
+        return char.IsAscii( ch );
     }
 
     private async Task GetOrCreateUser()
@@ -154,14 +191,20 @@ public class TelnetClient
         await _writer.WriteLineAsync( "" );
         await _writer.WriteLineAsync( "Please enter your player name:" );
 
-        var playerName = ( await ReadInput() ).Trim().Truncate( 10 );
+        var playerName = ( await ReadInput() )?.Trim().Truncate( 10 );
+
+        if ( string.IsNullOrEmpty( playerName ) )
+        {
+            await CreateUser();
+            return;
+        }
 
         await _writer.WriteLineAsync( "" );
         await _writer.WriteLineAsync( $"Confirm you want you player to be named: {playerName} (y/N)" );
 
-        var response = ( await ReadInput() );
+        var response = ( await ReadInput() ) ?? "";
 
-        if ( !response.Trim().ToLower().StartsWith( "y" ) )
+        if ( !response.Trim().StartsWith( "y", StringComparison.CurrentCultureIgnoreCase ) )
         {
             await CreateUser();
             return;

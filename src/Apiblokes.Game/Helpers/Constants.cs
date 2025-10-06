@@ -10,6 +10,6 @@ public static class Constants
     public const int YStart = 5;
     public const int MaxNumberOfWorldBlokes = 40;
 
-    public const string Level2CatcherName = "Cubical";
+    public const string Level2CatcherName = "Cubicle";
     public const string Level3CatcherName = "Office";
 }

@@ -14,6 +14,11 @@ public class DataContext : DbContext, IDataContext
     {
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath( folder );
+        path = Path.Join("data");
+        if (!Directory.Exists(path))
+        {
+            Directory.CreateDirectory(path);
+        }
         DbPath = System.IO.Path.Join( path, "apiblokes.db" );
     }
 
